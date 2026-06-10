@@ -1,0 +1,249 @@
+{
+  "updatedAt": "2026-06-10T12:34:59.524Z",
+  "createdAt": "2026-05-01T04:16:51.080Z",
+  "id": "zMsMhISi9aERdVcf",
+  "name": "[ TOOL ] User · Patch",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "unique_id"
+            },
+            {
+              "name": "data"
+            }
+          ]
+        }
+      },
+      "id": "91b3ff0e-0d46-4335-b68c-e23868cfa341",
+      "name": "Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        352,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT patch_user(\n  '{{ $json.unique_id }}',\n  '{{ $json.data }}'::jsonb\n)",
+        "options": {}
+      },
+      "id": "6b6265bc-59dd-45b0-b5e4-ecb4b29de0b3",
+      "name": "PATCH_USER",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        576,
+        640
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r01",
+              "name": "resultado",
+              "type": "string",
+              "value": "=dados salvos: {{ $('Trigger').item.json.data }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9289333f-fd37-4ee9-be6b-193330487baa",
+      "name": "SET_RESPONSE",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        800,
+        640
+      ]
+    }
+  ],
+  "connections": {
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "PATCH_USER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PATCH_USER": {
+      "main": [
+        [
+          {
+            "node": "SET_RESPONSE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Trigger": [
+      {
+        "json": {
+          "unique_id": "83-131-4",
+          "data": "{\"display_name\": \"Felipe\"}"
+        }
+      }
+    ]
+  },
+  "versionId": "ad1a29c8-c6df-4b52-ae53-9dce747c5fcd",
+  "activeVersionId": "ad1a29c8-c6df-4b52-ae53-9dce747c5fcd",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-01T04:16:51.080Z",
+      "createdAt": "2026-05-01T04:16:51.080Z",
+      "role": "workflow:owner",
+      "workflowId": "zMsMhISi9aERdVcf",
+      "projectId": "biUQguab5U7Obw0N"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-08T02:59:09.657Z",
+    "createdAt": "2026-05-08T02:59:06.890Z",
+    "versionId": "ad1a29c8-c6df-4b52-ae53-9dce747c5fcd",
+    "workflowId": "zMsMhISi9aERdVcf",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "unique_id"
+              },
+              {
+                "name": "data"
+              }
+            ]
+          }
+        },
+        "id": "91b3ff0e-0d46-4335-b68c-e23868cfa341",
+        "name": "Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          352,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT patch_user(\n  '{{ $json.unique_id }}',\n  '{{ $json.data }}'::jsonb\n)",
+          "options": {}
+        },
+        "id": "6b6265bc-59dd-45b0-b5e4-ecb4b29de0b3",
+        "name": "PATCH_USER",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          576,
+          640
+        ],
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        },
+        "continueOnFail": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "r01",
+                "name": "resultado",
+                "type": "string",
+                "value": "=dados salvos: {{ $('Trigger').item.json.data }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9289333f-fd37-4ee9-be6b-193330487baa",
+        "name": "SET_RESPONSE",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          800,
+          640
+        ]
+      }
+    ],
+    "connections": {
+      "Trigger": {
+        "main": [
+          [
+            {
+              "node": "PATCH_USER",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "PATCH_USER": {
+        "main": [
+          [
+            {
+              "node": "SET_RESPONSE",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "System AI SIM",
+    "name": "Version ad1a29c8",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": [
+    {
+      "updatedAt": "2026-06-10T12:30:02.035Z",
+      "createdAt": "2026-06-10T12:30:02.035Z",
+      "id": "dQiugrS0okCvZHoj",
+      "name": "github"
+    },
+    {
+      "updatedAt": "2025-12-09T19:47:18.101Z",
+      "createdAt": "2025-12-09T19:47:18.101Z",
+      "id": "w9RugkEeasnJt107",
+      "name": "SYSTEM"
+    }
+  ]
+}
