@@ -1,0 +1,209 @@
+{
+  "updatedAt": "2026-06-10T12:33:34.690Z",
+  "createdAt": "2026-05-27T14:42:08.145Z",
+  "id": "cl4nJl75HbSySzBy",
+  "name": "[ CRON ] Atualiza Catálogo · KLeilões",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "id": "02cfdb30-1330-46e6-b50b-7b11cc76000a",
+      "name": "A cada 1 hora",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        992,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://admkl.emps.online/n8n?table=categoria_tipo_bem",
+        "options": {}
+      },
+      "id": "20741487-dce6-48d5-b73a-02bc55f789bc",
+      "name": "GET_Categoria_Tipo_Bem",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1264,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT public.update_kleiloes_catalog(\n  '{{ JSON.stringify($json).replace(/'/g, \"''\") }}'::jsonb\n) AS result;",
+        "options": {}
+      },
+      "id": "bab54424-1790-41ed-8038-46bf1a25481b",
+      "name": "UPDATE_CATALOGO_PROMPT",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1520,
+        80
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "A cada 1 hora": {
+      "main": [
+        [
+          {
+            "node": "GET_Categoria_Tipo_Bem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET_Categoria_Tipo_Bem": {
+      "main": [
+        [
+          {
+            "node": "UPDATE_CATALOGO_PROMPT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": {
+    "node:A cada 1 hora": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "3317467b-12c5-4512-b365-8d032a8c126e",
+  "activeVersionId": "3317467b-12c5-4512-b365-8d032a8c126e",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-27T14:42:08.145Z",
+      "createdAt": "2026-05-27T14:42:08.145Z",
+      "role": "workflow:owner",
+      "workflowId": "cl4nJl75HbSySzBy",
+      "projectId": "biUQguab5U7Obw0N"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-27T14:47:34.519Z",
+    "createdAt": "2026-05-27T14:47:28.922Z",
+    "versionId": "3317467b-12c5-4512-b365-8d032a8c126e",
+    "workflowId": "cl4nJl75HbSySzBy",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "hours"
+              }
+            ]
+          }
+        },
+        "id": "02cfdb30-1330-46e6-b50b-7b11cc76000a",
+        "name": "A cada 1 hora",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          992,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://admkl.emps.online/n8n?table=categoria_tipo_bem",
+          "options": {}
+        },
+        "id": "20741487-dce6-48d5-b73a-02bc55f789bc",
+        "name": "GET_Categoria_Tipo_Bem",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1264,
+          80
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT public.update_kleiloes_catalog(\n  '{{ JSON.stringify($json).replace(/'/g, \"''\") }}'::jsonb\n) AS result;",
+          "options": {}
+        },
+        "id": "bab54424-1790-41ed-8038-46bf1a25481b",
+        "name": "UPDATE_CATALOGO_PROMPT",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1520,
+          80
+        ],
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "A cada 1 hora": {
+        "main": [
+          [
+            {
+              "node": "GET_Categoria_Tipo_Bem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET_Categoria_Tipo_Bem": {
+        "main": [
+          [
+            {
+              "node": "UPDATE_CATALOGO_PROMPT",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "System AI SIM",
+    "name": "Version 3317467b",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": [
+    {
+      "updatedAt": "2026-06-10T12:30:02.035Z",
+      "createdAt": "2026-06-10T12:30:02.035Z",
+      "id": "dQiugrS0okCvZHoj",
+      "name": "github"
+    }
+  ]
+}
