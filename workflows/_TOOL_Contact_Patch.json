@@ -1,0 +1,443 @@
+{
+  "updatedAt": "2026-06-10T12:35:32.161Z",
+  "createdAt": "2026-05-01T04:57:52.160Z",
+  "id": "o1HDwcjYVzTDoEsq",
+  "name": "[ TOOL ] Contact · Patch",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "unique_id"
+            },
+            {
+              "name": "contact_id"
+            },
+            {
+              "name": "data"
+            }
+          ]
+        }
+      },
+      "id": "889b788f-de6e-4c43-9440-4d7fb18fd5d6",
+      "name": "Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        128,
+        96
+      ],
+      "notes": "Recebe: unique_id (string), contact_id (number), data (objeto ou JSON string)\ndata aceita: name, email, phone_number, custom_attributes"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.item.json;\nconst parts = (input.unique_id || '').split('-');\n\nif (parts.length < 3) {\n  throw new Error('unique_id inválido: ' + input.unique_id);\n}\n\nconst contact_id = parseInt(input.contact_id);\nif (!contact_id || isNaN(contact_id)) {\n  throw new Error('contact_id inválido ou não informado: ' + input.contact_id);\n}\n\n// Aceita data como objeto ou JSON string\nlet data = input.data;\nif (typeof data === 'string') {\n  try { data = JSON.parse(data); } catch(e) { throw new Error('data inválido (JSON malformado): ' + data); }\n}\n\n// Campos permitidos para update\nconst allowed = ['name', 'email', 'phone_number', 'custom_attributes'];\nconst payload = {};\nfor (const key of allowed) {\n  if (data[key] !== undefined) payload[key] = data[key];\n}\n\nif (Object.keys(payload).length === 0) {\n  throw new Error('data não contém nenhum campo válido. Campos aceitos: ' + allowed.join(', '));\n}\n\nreturn {\n  json: {\n    account_id:  parseInt(parts[0]),\n    inbox_id:    parseInt(parts[1]),\n    contact_id,\n    payload,\n    unique_id: input.unique_id\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        368,
+        96
+      ],
+      "id": "e96543b5-1a53-4b7e-b017-cc0e75e6f27c",
+      "name": "Parse_IDs",
+      "notes": "Valida unique_id e contact_id. Filtra apenas campos permitidos no payload."
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT base_url, user_token\nFROM system_projects\nWHERE account_id = {{ $json.account_id }}\n  AND is_active = true\nLIMIT 1;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        608,
+        96
+      ],
+      "id": "a7a51b09-0e01-43f1-87d0-398e90e4ce7d",
+      "name": "Get_Config",
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      },
+      "notes": "Busca base_url e user_token do projeto ativo pelo account_id"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $('Get_Config').item.json.base_url }}/api/v1/accounts/{{ $('Parse_IDs').item.json.account_id }}/contacts/{{ $('Parse_IDs').item.json.contact_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "={{ $('Get_Config').item.json.user_token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($('Parse_IDs').item.json.payload) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        848,
+        96
+      ],
+      "id": "85f23f33-7d65-430d-aead-64775cd14bae",
+      "name": "PATCH_Contact",
+      "notes": "Atualiza contato no Chatwoot. Suporta: name, email, phone_number, custom_attributes"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r01",
+              "name": "success",
+              "value": "={{ $json.statusCode >= 200 && $json.statusCode < 300 }}",
+              "type": "boolean"
+            },
+            {
+              "id": "r02",
+              "name": "message",
+              "value": "={{ $json.statusCode >= 200 && $json.statusCode < 300 ? 'Contato atualizado com sucesso.' : 'Erro ao atualizar contato: ' + $json.statusCode }}",
+              "type": "string"
+            },
+            {
+              "id": "r03",
+              "name": "contact",
+              "value": "={{ $json.body || {} }}",
+              "type": "object"
+            },
+            {
+              "id": "r04",
+              "name": "fields_updated",
+              "value": "={{ Object.keys($('Parse_IDs').item.json.payload) }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1088,
+        96
+      ],
+      "id": "19cd0c09-1f4a-49ec-87d7-1d0e011421ca",
+      "name": "SET_RESPONSE",
+      "notes": "Retorna: success, message, contact (objeto atualizado), fields_updated (campos que foram alterados)"
+    }
+  ],
+  "connections": {
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "Parse_IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse_IDs": {
+      "main": [
+        [
+          {
+            "node": "Get_Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Config": {
+      "main": [
+        [
+          {
+            "node": "PATCH_Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PATCH_Contact": {
+      "main": [
+        [
+          {
+            "node": "SET_RESPONSE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Trigger": [
+      {
+        "json": {
+          "unique_id": "82-130-2",
+          "contact_id": "456",
+          "data": "{\"name\": \"João Silva\", \"email\": \"joao@empresa.com\", \"phone_number\": \"+5511999990000\", \"custom_attributes\": {\"plano\": \"premium\", \"cpf\": \"123.456.789-00\"}}"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "14ff2bf2-4305-4f10-8346-345c7ab690dd",
+  "activeVersionId": "14ff2bf2-4305-4f10-8346-345c7ab690dd",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-01T04:57:52.160Z",
+      "createdAt": "2026-05-01T04:57:52.160Z",
+      "role": "workflow:owner",
+      "workflowId": "o1HDwcjYVzTDoEsq",
+      "projectId": "biUQguab5U7Obw0N"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-05T10:32:36.456Z",
+    "createdAt": "2026-05-05T09:16:49.196Z",
+    "versionId": "14ff2bf2-4305-4f10-8346-345c7ab690dd",
+    "workflowId": "o1HDwcjYVzTDoEsq",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "unique_id"
+              },
+              {
+                "name": "contact_id"
+              },
+              {
+                "name": "data"
+              }
+            ]
+          }
+        },
+        "id": "889b788f-de6e-4c43-9440-4d7fb18fd5d6",
+        "name": "Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          128,
+          96
+        ],
+        "notes": "Recebe: unique_id (string), contact_id (number), data (objeto ou JSON string)\ndata aceita: name, email, phone_number, custom_attributes"
+      },
+      {
+        "parameters": {
+          "jsCode": "const input = $input.item.json;\nconst parts = (input.unique_id || '').split('-');\n\nif (parts.length < 3) {\n  throw new Error('unique_id inválido: ' + input.unique_id);\n}\n\nconst contact_id = parseInt(input.contact_id);\nif (!contact_id || isNaN(contact_id)) {\n  throw new Error('contact_id inválido ou não informado: ' + input.contact_id);\n}\n\n// Aceita data como objeto ou JSON string\nlet data = input.data;\nif (typeof data === 'string') {\n  try { data = JSON.parse(data); } catch(e) { throw new Error('data inválido (JSON malformado): ' + data); }\n}\n\n// Campos permitidos para update\nconst allowed = ['name', 'email', 'phone_number', 'custom_attributes'];\nconst payload = {};\nfor (const key of allowed) {\n  if (data[key] !== undefined) payload[key] = data[key];\n}\n\nif (Object.keys(payload).length === 0) {\n  throw new Error('data não contém nenhum campo válido. Campos aceitos: ' + allowed.join(', '));\n}\n\nreturn {\n  json: {\n    account_id:  parseInt(parts[0]),\n    inbox_id:    parseInt(parts[1]),\n    contact_id,\n    payload,\n    unique_id: input.unique_id\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          368,
+          96
+        ],
+        "id": "e96543b5-1a53-4b7e-b017-cc0e75e6f27c",
+        "name": "Parse_IDs",
+        "notes": "Valida unique_id e contact_id. Filtra apenas campos permitidos no payload."
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT base_url, user_token\nFROM system_projects\nWHERE account_id = {{ $json.account_id }}\n  AND is_active = true\nLIMIT 1;",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          608,
+          96
+        ],
+        "id": "a7a51b09-0e01-43f1-87d0-398e90e4ce7d",
+        "name": "Get_Config",
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        },
+        "notes": "Busca base_url e user_token do projeto ativo pelo account_id"
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "={{ $('Get_Config').item.json.base_url }}/api/v1/accounts/{{ $('Parse_IDs').item.json.account_id }}/contacts/{{ $('Parse_IDs').item.json.contact_id }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "={{ $('Get_Config').item.json.user_token }}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify($('Parse_IDs').item.json.payload) }}",
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true,
+                "neverError": true
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          848,
+          96
+        ],
+        "id": "85f23f33-7d65-430d-aead-64775cd14bae",
+        "name": "PATCH_Contact",
+        "notes": "Atualiza contato no Chatwoot. Suporta: name, email, phone_number, custom_attributes"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "r01",
+                "name": "success",
+                "value": "={{ $json.statusCode >= 200 && $json.statusCode < 300 }}",
+                "type": "boolean"
+              },
+              {
+                "id": "r02",
+                "name": "message",
+                "value": "={{ $json.statusCode >= 200 && $json.statusCode < 300 ? 'Contato atualizado com sucesso.' : 'Erro ao atualizar contato: ' + $json.statusCode }}",
+                "type": "string"
+              },
+              {
+                "id": "r03",
+                "name": "contact",
+                "value": "={{ $json.body || {} }}",
+                "type": "object"
+              },
+              {
+                "id": "r04",
+                "name": "fields_updated",
+                "value": "={{ Object.keys($('Parse_IDs').item.json.payload) }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1088,
+          96
+        ],
+        "id": "19cd0c09-1f4a-49ec-87d7-1d0e011421ca",
+        "name": "SET_RESPONSE",
+        "notes": "Retorna: success, message, contact (objeto atualizado), fields_updated (campos que foram alterados)"
+      }
+    ],
+    "connections": {
+      "Trigger": {
+        "main": [
+          [
+            {
+              "node": "Parse_IDs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse_IDs": {
+        "main": [
+          [
+            {
+              "node": "Get_Config",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_Config": {
+        "main": [
+          [
+            {
+              "node": "PATCH_Contact",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "PATCH_Contact": {
+        "main": [
+          [
+            {
+              "node": "SET_RESPONSE",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "System AI SIM",
+    "name": "Version 14ff2bf2",
+    "description": "",
+    "autosaved": false
+  },
+  "tags": [
+    {
+      "updatedAt": "2026-06-10T12:30:02.035Z",
+      "createdAt": "2026-06-10T12:30:02.035Z",
+      "id": "dQiugrS0okCvZHoj",
+      "name": "github"
+    }
+  ]
+}
