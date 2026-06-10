@@ -1,0 +1,257 @@
+{
+  "updatedAt": "2026-06-10T12:34:28.619Z",
+  "createdAt": "2026-05-05T08:32:39.377Z",
+  "id": "RLum2oNmKSWOPZAi",
+  "name": "[ TOOL ] Leilão · Lookup · KLeilões",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "unique_id"
+            },
+            {
+              "name": "leilao"
+            }
+          ]
+        }
+      },
+      "id": "trigger-1",
+      "name": "Trigger",
+      "position": [
+        0,
+        0
+      ],
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "url": "=https://admkl.emps.online/n8n?table=lotes&leilao={{ encodeURIComponent($('Trigger').item.json.leilao) }}&limit=100&offset=0",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "http-1",
+      "name": "GET_Lotes",
+      "position": [
+        240,
+        0
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r01",
+              "name": "unique_id",
+              "type": "string",
+              "value": "={{ $('Trigger').item.json.unique_id }}"
+            },
+            {
+              "id": "r02",
+              "name": "leilao",
+              "type": "string",
+              "value": "={{ $('Trigger').item.json.leilao }}"
+            },
+            {
+              "id": "r03",
+              "name": "total",
+              "type": "number",
+              "value": "={{ $json.count }}"
+            },
+            {
+              "id": "r04",
+              "name": "lotes",
+              "type": "array",
+              "value": "={{ $json.data }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-1",
+      "name": "SET_RESPONSE",
+      "position": [
+        480,
+        0
+      ],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4
+    }
+  ],
+  "connections": {
+    "GET_Lotes": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "SET_RESPONSE",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Trigger": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "GET_Lotes",
+            "type": "main"
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "b517186c-73b2-4c7e-bc68-83da477b262d",
+  "activeVersionId": "b517186c-73b2-4c7e-bc68-83da477b262d",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-05T08:32:39.377Z",
+      "createdAt": "2026-05-05T08:32:39.377Z",
+      "role": "workflow:owner",
+      "workflowId": "RLum2oNmKSWOPZAi",
+      "projectId": "biUQguab5U7Obw0N"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-06T14:36:54.249Z",
+    "createdAt": "2026-05-05T08:32:39.390Z",
+    "versionId": "b517186c-73b2-4c7e-bc68-83da477b262d",
+    "workflowId": "RLum2oNmKSWOPZAi",
+    "nodes": [
+      {
+        "id": "trigger-1",
+        "name": "Trigger",
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "unique_id"
+              },
+              {
+                "name": "leilao"
+              }
+            ]
+          }
+        },
+        "position": [
+          0,
+          0
+        ],
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1
+      },
+      {
+        "id": "http-1",
+        "name": "GET_Lotes",
+        "parameters": {
+          "options": {
+            "timeout": 15000
+          },
+          "url": "=https://admkl.emps.online/n8n?table=lotes&leilao={{ encodeURIComponent($('Trigger').item.json.leilao) }}&limit=100&offset=0"
+        },
+        "position": [
+          240,
+          0
+        ],
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2
+      },
+      {
+        "id": "set-1",
+        "name": "SET_RESPONSE",
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "r01",
+                "name": "unique_id",
+                "type": "string",
+                "value": "={{ $('Trigger').item.json.unique_id }}"
+              },
+              {
+                "id": "r02",
+                "name": "leilao",
+                "type": "string",
+                "value": "={{ $('Trigger').item.json.leilao }}"
+              },
+              {
+                "id": "r03",
+                "name": "total",
+                "type": "number",
+                "value": "={{ $json.count }}"
+              },
+              {
+                "id": "r04",
+                "name": "lotes",
+                "type": "array",
+                "value": "={{ $json.data }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "position": [
+          480,
+          0
+        ],
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4
+      }
+    ],
+    "connections": {
+      "GET_Lotes": {
+        "main": [
+          [
+            {
+              "index": 0,
+              "node": "SET_RESPONSE",
+              "type": "main"
+            }
+          ]
+        ]
+      },
+      "Trigger": {
+        "main": [
+          [
+            {
+              "index": 0,
+              "node": "GET_Lotes",
+              "type": "main"
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "System AI SIM",
+    "name": "Version b517186c",
+    "description": "",
+    "autosaved": false
+  },
+  "tags": [
+    {
+      "updatedAt": "2026-06-10T12:30:02.035Z",
+      "createdAt": "2026-06-10T12:30:02.035Z",
+      "id": "dQiugrS0okCvZHoj",
+      "name": "github"
+    }
+  ]
+}
