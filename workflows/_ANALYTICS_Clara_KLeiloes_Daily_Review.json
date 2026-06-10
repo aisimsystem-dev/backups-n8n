@@ -1,0 +1,509 @@
+{
+  "updatedAt": "2026-06-10T12:36:31.959Z",
+  "createdAt": "2026-05-08T04:02:47.304Z",
+  "id": "CGOsLvP4wdIdCFq1",
+  "name": "[ ANALYTICS ] Clara · KLeilões · Daily Review",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 3 * * *"
+            }
+          ]
+        }
+      },
+      "id": "d54afe62-c447-4023-8fe7-6336806045d1",
+      "name": "Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        3280,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT config_prompt, stages FROM system_projects WHERE project_key = 'clara_kleiloes'",
+        "options": {}
+      },
+      "id": "ff04659c-3bc9-487b-bd0f-c4d9e5ed76c9",
+      "name": "LOAD_CONFIG",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3520,
+        128
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://app.cria.chat/api/v1/accounts/83/conversations",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "all"
+            },
+            {
+              "name": "inbox_id",
+              "value": "131"
+            },
+            {
+              "name": "page",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "PArdJisYhtUCfEo9ZurbzxQ9"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "3c1f85a7-13f7-4cea-b615-c0fc6bdbca16",
+      "name": "GET_Conversations",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3760,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.prompt }}",
+        "options": {}
+      },
+      "id": "2497b7f5-ad0e-4698-8b51-15f7cfa6eaf8",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        4272,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "cfe71a70-a605-4190-b353-88ee442183f1",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        4272,
+        384
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZOE7x3ra7YBLPW6Q",
+          "name": "SYSTEM - CORE"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r1",
+              "name": "relatorio",
+              "type": "string",
+              "value": "={{ $json.output }}"
+            },
+            {
+              "id": "r2",
+              "name": "gerado_em",
+              "type": "string",
+              "value": "={{ $now.setZone('America/Recife').toFormat('dd/MM/yyyy HH:mm') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "425ad51b-779e-4a9a-aff3-3696383d5294",
+      "name": "SET_RESPONSE",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4704,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const config = $('LOAD_CONFIG').item.json;\nconst payload = $input.first().json.data.payload || [];\n\nconst transcripts = payload.map(conv => {\n  const lastMsg = conv.last_non_activity_message?.content || '(sem mensagens)';\n  const labels = (conv.labels || []).join(', ');\n  const contact = conv.meta?.sender?.name || 'Desconhecido';\n  const phone = conv.meta?.sender?.phone_number || '';\n  \n  return `=== Conversa #${conv.id} — ${contact} (${phone}) | Status: ${conv.status} | Labels: ${labels} ===\\nUltima mensagem: ${lastMsg}\\n`;\n}).join('\\n---\\n');\n\nconst prompt = `Você é um especialista em qualidade de atendimento e prompt engineering para agentes de IA conversacional.\n\nAnalise as conversas da Clara com base nos prompts abaixo. Retorne um relatório em TEXTO PURO, organizado, sem markdown, sem asteriscos, sem emojis.\n\nESTRUTURA OBRIGATÓRIA:\n\n1. RESUMO GERAL\n   Total de conversas, usuarios unicos, leads qualificados, encaminhados, sem resposta.\n\n2. COMPORTAMENTO DA CLARA\n   O que esta funcionando bem — cite exemplos com ID da conversa.\n\n3. PROBLEMAS IDENTIFICADOS\n   Erros, respostas inadequadas, falhas de tool, loops. Cite o ID e o trecho.\n\n4. GAPS NOS PROMPTS\n   Situacoes nao cobertas ou mal cobertas pelos prompts atuais.\n\n5. SUGESTOES DE MELHORIA\n   Melhorias concretas e priorizadas.\n\n---\n\nCONFIG_PROMPT:\n${config.config_prompt}\n\nSTAGES:\n${JSON.stringify(config.stages, null, 2)}\n\nCONVERSAS (${payload.length} no total):\n${transcripts}`;\n\nreturn [{ json: { prompt } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4000,
+        128
+      ],
+      "id": "d6671868-43fb-4b81-8df0-12329d89c01a",
+      "name": "set+prompt"
+    }
+  ],
+  "connections": {
+    "Schedule": {
+      "main": [
+        [
+          {
+            "node": "LOAD_CONFIG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LOAD_CONFIG": {
+      "main": [
+        [
+          {
+            "node": "GET_Conversations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET_Conversations": {
+      "main": [
+        [
+          {
+            "node": "set+prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "SET_RESPONSE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set+prompt": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": {
+    "node:Schedule": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "e2990da5-fc3d-4307-80ec-b437ece01a12",
+  "activeVersionId": "e2990da5-fc3d-4307-80ec-b437ece01a12",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-08T04:02:47.304Z",
+      "createdAt": "2026-05-08T04:02:47.304Z",
+      "role": "workflow:owner",
+      "workflowId": "CGOsLvP4wdIdCFq1",
+      "projectId": "biUQguab5U7Obw0N"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-06-10T12:36:22.266Z",
+    "createdAt": "2026-05-08T04:49:37.124Z",
+    "versionId": "e2990da5-fc3d-4307-80ec-b437ece01a12",
+    "workflowId": "CGOsLvP4wdIdCFq1",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "0 3 * * *"
+              }
+            ]
+          }
+        },
+        "id": "d54afe62-c447-4023-8fe7-6336806045d1",
+        "name": "Schedule",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          3280,
+          128
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT config_prompt, stages FROM system_projects WHERE project_key = 'clara_kleiloes'",
+          "options": {}
+        },
+        "id": "ff04659c-3bc9-487b-bd0f-c4d9e5ed76c9",
+        "name": "LOAD_CONFIG",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          3520,
+          128
+        ],
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "https://app.cria.chat/api/v1/accounts/83/conversations",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "status",
+                "value": "all"
+              },
+              {
+                "name": "inbox_id",
+                "value": "131"
+              },
+              {
+                "name": "page",
+                "value": "1"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "PArdJisYhtUCfEo9ZurbzxQ9"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 30000
+          }
+        },
+        "id": "3c1f85a7-13f7-4cea-b615-c0fc6bdbca16",
+        "name": "GET_Conversations",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          3760,
+          128
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.prompt }}",
+          "options": {}
+        },
+        "id": "2497b7f5-ad0e-4698-8b51-15f7cfa6eaf8",
+        "name": "AI Agent",
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          4272,
+          128
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "cfe71a70-a605-4190-b353-88ee442183f1",
+        "name": "Google Gemini Chat Model",
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1.1,
+        "position": [
+          4272,
+          384
+        ],
+        "credentials": {
+          "googlePalmApi": {
+            "id": "ZOE7x3ra7YBLPW6Q",
+            "name": "SYSTEM - CORE"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "r1",
+                "name": "relatorio",
+                "type": "string",
+                "value": "={{ $json.output }}"
+              },
+              {
+                "id": "r2",
+                "name": "gerado_em",
+                "type": "string",
+                "value": "={{ $now.setZone('America/Recife').toFormat('dd/MM/yyyy HH:mm') }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "425ad51b-779e-4a9a-aff3-3696383d5294",
+        "name": "SET_RESPONSE",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          4704,
+          128
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const config = $('LOAD_CONFIG').item.json;\nconst payload = $input.first().json.data.payload || [];\n\nconst transcripts = payload.map(conv => {\n  const lastMsg = conv.last_non_activity_message?.content || '(sem mensagens)';\n  const labels = (conv.labels || []).join(', ');\n  const contact = conv.meta?.sender?.name || 'Desconhecido';\n  const phone = conv.meta?.sender?.phone_number || '';\n  \n  return `=== Conversa #${conv.id} — ${contact} (${phone}) | Status: ${conv.status} | Labels: ${labels} ===\\nUltima mensagem: ${lastMsg}\\n`;\n}).join('\\n---\\n');\n\nconst prompt = `Você é um especialista em qualidade de atendimento e prompt engineering para agentes de IA conversacional.\n\nAnalise as conversas da Clara com base nos prompts abaixo. Retorne um relatório em TEXTO PURO, organizado, sem markdown, sem asteriscos, sem emojis.\n\nESTRUTURA OBRIGATÓRIA:\n\n1. RESUMO GERAL\n   Total de conversas, usuarios unicos, leads qualificados, encaminhados, sem resposta.\n\n2. COMPORTAMENTO DA CLARA\n   O que esta funcionando bem — cite exemplos com ID da conversa.\n\n3. PROBLEMAS IDENTIFICADOS\n   Erros, respostas inadequadas, falhas de tool, loops. Cite o ID e o trecho.\n\n4. GAPS NOS PROMPTS\n   Situacoes nao cobertas ou mal cobertas pelos prompts atuais.\n\n5. SUGESTOES DE MELHORIA\n   Melhorias concretas e priorizadas.\n\n---\n\nCONFIG_PROMPT:\n${config.config_prompt}\n\nSTAGES:\n${JSON.stringify(config.stages, null, 2)}\n\nCONVERSAS (${payload.length} no total):\n${transcripts}`;\n\nreturn [{ json: { prompt } }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          4000,
+          128
+        ],
+        "id": "d6671868-43fb-4b81-8df0-12329d89c01a",
+        "name": "set+prompt"
+      }
+    ],
+    "connections": {
+      "Schedule": {
+        "main": [
+          [
+            {
+              "node": "LOAD_CONFIG",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "LOAD_CONFIG": {
+        "main": [
+          [
+            {
+              "node": "GET_Conversations",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET_Conversations": {
+        "main": [
+          [
+            {
+              "node": "set+prompt",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent": {
+        "main": [
+          [
+            {
+              "node": "SET_RESPONSE",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Gemini Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "set+prompt": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "System AI SIM",
+    "name": "Version e2990da5",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": [
+    {
+      "updatedAt": "2026-06-10T12:30:02.035Z",
+      "createdAt": "2026-06-10T12:30:02.035Z",
+      "id": "dQiugrS0okCvZHoj",
+      "name": "github"
+    }
+  ]
+}
