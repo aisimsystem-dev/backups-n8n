@@ -1,0 +1,832 @@
+{
+  "updatedAt": "2026-06-10T12:32:57.689Z",
+  "createdAt": "2026-05-05T08:28:17.455Z",
+  "id": "N261pFWbY3px5OYL",
+  "name": "[ TOOL ] Bens · Search · KLeilões",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "unique_id"
+            },
+            {
+              "name": "categoria"
+            },
+            {
+              "name": "tipo_bem"
+            },
+            {
+              "name": "q"
+            }
+          ]
+        }
+      },
+      "id": "de4d13be-a6df-464f-a423-ca80154f6a76",
+      "name": "Trigger",
+      "position": [
+        2240,
+        656
+      ],
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fc1",
+              "leftValue": "={{ (($('Trigger').item.json.categoria || '') + '').trim() }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "cfbd9e1e-a907-4fd1-a927-c64d5096da74",
+      "name": "Filter_Categoria",
+      "position": [
+        2400,
+        496
+      ],
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fc2",
+              "leftValue": "={{ (($('Trigger').item.json.tipo_bem || '') + '').trim() }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "fce359f3-769b-4de3-855b-97a46a0f0058",
+      "name": "Filter_TipoBem",
+      "position": [
+        2400,
+        656
+      ],
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fc3",
+              "leftValue": "={{ (($('Trigger').item.json.q || '') + '').trim() }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c3cee0ad-4d92-4690-bcd5-3d7a5c37a834",
+      "name": "Filter_Query",
+      "position": [
+        2400,
+        816
+      ],
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "url": "=https://admkl.emps.online/n8n?table=lotes&categoria={{ encodeURIComponent((($('Trigger').item.json.categoria || '') + '').trim()) }}&limit=300&offset=0",
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "b36ce4bd-9177-46fc-bfd8-b34a25a8b427",
+      "name": "GET_Categoria",
+      "position": [
+        2640,
+        496
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "=https://admkl.emps.online/n8n?table=lotes&tipo_bem={{ encodeURIComponent((($('Trigger').item.json.tipo_bem || '') + '').trim()) }}&limit=300&offset=0",
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "db245426-bfa8-4497-ba3d-bfe50ed71782",
+      "name": "GET_TipoBem",
+      "position": [
+        2640,
+        656
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "=https://admkl.emps.online/n8n?table=lotes&q={{ encodeURIComponent((($('Trigger').item.json.q || '') + '').trim()) }}&limit=300&offset=0",
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "id": "890adf37-3982-4db8-ac6b-65061cceb8cd",
+      "name": "GET_Query",
+      "position": [
+        2640,
+        816
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "445b701a-a1b4-4058-92a7-195c0ad702c6",
+      "name": "Split_Categoria",
+      "position": [
+        2848,
+        496
+      ],
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "8320467d-c006-4d07-8c77-ed561b6d8913",
+      "name": "Split_TipoBem",
+      "position": [
+        2848,
+        656
+      ],
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "d64fcf96-9c3f-4e8b-a268-b26d09e4eeb3",
+      "name": "Split_Query",
+      "position": [
+        2848,
+        816
+      ],
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "21d55f3e-4d27-4f17-a46d-76af0ab9c418",
+      "name": "Merge",
+      "position": [
+        3072,
+        640
+      ],
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "jsCode": "const itens = $input.all().map(i => i.json);\n\n// dedup por id (mantém primeira ocorrência)\nconst vistos = new Set();\nconst lotes = [];\nfor (const lote of itens) {\n  const id = lote.id;\n  if (id == null) { lotes.push(lote); continue; }\n  if (vistos.has(id)) continue;\n  vistos.add(id);\n  lotes.push(lote);\n}\n\nreturn [{\n  json: {\n    unique_id: $('Trigger').first().json.unique_id,\n    total: lotes.length,\n    lotes: lotes\n  }\n}];"
+      },
+      "id": "92e0f77d-fa96-425d-b319-803af8f05f22",
+      "name": "SET_RESPONSE",
+      "position": [
+        3296,
+        656
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
+    }
+  ],
+  "connections": {
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "Filter_Categoria",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter_TipoBem",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter_Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter_Categoria": {
+      "main": [
+        [
+          {
+            "node": "GET_Categoria",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter_TipoBem": {
+      "main": [
+        [
+          {
+            "node": "GET_TipoBem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter_Query": {
+      "main": [
+        [
+          {
+            "node": "GET_Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET_Categoria": {
+      "main": [
+        [
+          {
+            "node": "Split_Categoria",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET_TipoBem": {
+      "main": [
+        [
+          {
+            "node": "Split_TipoBem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET_Query": {
+      "main": [
+        [
+          {
+            "node": "Split_Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split_Categoria": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split_TipoBem": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Split_Query": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "SET_RESPONSE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Trigger": [
+      {
+        "json": {
+          "unique_id": "83-131-4",
+          "categoria": "",
+          "tipo_bem": "",
+          "q": "Monte Castelo"
+        }
+      }
+    ]
+  },
+  "versionId": "7c7a49e7-5281-4ed3-878b-11ada0aaec56",
+  "activeVersionId": "7c7a49e7-5281-4ed3-878b-11ada0aaec56",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-05T08:28:17.455Z",
+      "createdAt": "2026-05-05T08:28:17.455Z",
+      "role": "workflow:owner",
+      "workflowId": "N261pFWbY3px5OYL",
+      "projectId": "biUQguab5U7Obw0N"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-06-09T17:38:19.217Z",
+    "createdAt": "2026-06-09T17:38:05.886Z",
+    "versionId": "7c7a49e7-5281-4ed3-878b-11ada0aaec56",
+    "workflowId": "N261pFWbY3px5OYL",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "unique_id"
+              },
+              {
+                "name": "categoria"
+              },
+              {
+                "name": "tipo_bem"
+              },
+              {
+                "name": "q"
+              }
+            ]
+          }
+        },
+        "id": "de4d13be-a6df-464f-a423-ca80154f6a76",
+        "name": "Trigger",
+        "position": [
+          2240,
+          656
+        ],
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "fc1",
+                "leftValue": "={{ (($('Trigger').item.json.categoria || '') + '').trim() }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "cfbd9e1e-a907-4fd1-a927-c64d5096da74",
+        "name": "Filter_Categoria",
+        "position": [
+          2400,
+          496
+        ],
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "fc2",
+                "leftValue": "={{ (($('Trigger').item.json.tipo_bem || '') + '').trim() }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "fce359f3-769b-4de3-855b-97a46a0f0058",
+        "name": "Filter_TipoBem",
+        "position": [
+          2400,
+          656
+        ],
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "fc3",
+                "leftValue": "={{ (($('Trigger').item.json.q || '') + '').trim() }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "c3cee0ad-4d92-4690-bcd5-3d7a5c37a834",
+        "name": "Filter_Query",
+        "position": [
+          2400,
+          816
+        ],
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2
+      },
+      {
+        "parameters": {
+          "url": "=https://admkl.emps.online/n8n?table=lotes&categoria={{ encodeURIComponent((($('Trigger').item.json.categoria || '') + '').trim()) }}&limit=300&offset=0",
+          "options": {
+            "timeout": 20000
+          }
+        },
+        "id": "b36ce4bd-9177-46fc-bfd8-b34a25a8b427",
+        "name": "GET_Categoria",
+        "position": [
+          2640,
+          496
+        ],
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2
+      },
+      {
+        "parameters": {
+          "url": "=https://admkl.emps.online/n8n?table=lotes&tipo_bem={{ encodeURIComponent((($('Trigger').item.json.tipo_bem || '') + '').trim()) }}&limit=300&offset=0",
+          "options": {
+            "timeout": 20000
+          }
+        },
+        "id": "db245426-bfa8-4497-ba3d-bfe50ed71782",
+        "name": "GET_TipoBem",
+        "position": [
+          2640,
+          656
+        ],
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2
+      },
+      {
+        "parameters": {
+          "url": "=https://admkl.emps.online/n8n?table=lotes&q={{ encodeURIComponent((($('Trigger').item.json.q || '') + '').trim()) }}&limit=300&offset=0",
+          "options": {
+            "timeout": 20000
+          }
+        },
+        "id": "890adf37-3982-4db8-ac6b-65061cceb8cd",
+        "name": "GET_Query",
+        "position": [
+          2640,
+          816
+        ],
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "data",
+          "options": {}
+        },
+        "id": "445b701a-a1b4-4058-92a7-195c0ad702c6",
+        "name": "Split_Categoria",
+        "position": [
+          2848,
+          496
+        ],
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "data",
+          "options": {}
+        },
+        "id": "8320467d-c006-4d07-8c77-ed561b6d8913",
+        "name": "Split_TipoBem",
+        "position": [
+          2848,
+          656
+        ],
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "data",
+          "options": {}
+        },
+        "id": "d64fcf96-9c3f-4e8b-a268-b26d09e4eeb3",
+        "name": "Split_Query",
+        "position": [
+          2848,
+          816
+        ],
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "numberInputs": 3
+        },
+        "id": "21d55f3e-4d27-4f17-a46d-76af0ab9c418",
+        "name": "Merge",
+        "position": [
+          3072,
+          640
+        ],
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3
+      },
+      {
+        "parameters": {
+          "jsCode": "const itens = $input.all().map(i => i.json);\n\n// dedup por id (mantém primeira ocorrência)\nconst vistos = new Set();\nconst lotes = [];\nfor (const lote of itens) {\n  const id = lote.id;\n  if (id == null) { lotes.push(lote); continue; }\n  if (vistos.has(id)) continue;\n  vistos.add(id);\n  lotes.push(lote);\n}\n\nreturn [{\n  json: {\n    unique_id: $('Trigger').first().json.unique_id,\n    total: lotes.length,\n    lotes: lotes\n  }\n}];"
+        },
+        "id": "92e0f77d-fa96-425d-b319-803af8f05f22",
+        "name": "SET_RESPONSE",
+        "position": [
+          3296,
+          656
+        ],
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2
+      }
+    ],
+    "connections": {
+      "Trigger": {
+        "main": [
+          [
+            {
+              "node": "Filter_Categoria",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Filter_TipoBem",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Filter_Query",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter_Categoria": {
+        "main": [
+          [
+            {
+              "node": "GET_Categoria",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter_TipoBem": {
+        "main": [
+          [
+            {
+              "node": "GET_TipoBem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter_Query": {
+        "main": [
+          [
+            {
+              "node": "GET_Query",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET_Categoria": {
+        "main": [
+          [
+            {
+              "node": "Split_Categoria",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET_TipoBem": {
+        "main": [
+          [
+            {
+              "node": "Split_TipoBem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET_Query": {
+        "main": [
+          [
+            {
+              "node": "Split_Query",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split_Categoria": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split_TipoBem": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Split_Query": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 2
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "SET_RESPONSE",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "System AI SIM",
+    "name": "Version 7c7a49e7",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": [
+    {
+      "updatedAt": "2026-06-10T12:30:02.035Z",
+      "createdAt": "2026-06-10T12:30:02.035Z",
+      "id": "dQiugrS0okCvZHoj",
+      "name": "github"
+    },
+    {
+      "updatedAt": "2026-02-23T18:48:42.240Z",
+      "createdAt": "2026-02-23T18:48:42.240Z",
+      "id": "TS31Br5cdgCemSgD",
+      "name": "KLeilões"
+    },
+    {
+      "updatedAt": "2025-12-09T19:47:18.101Z",
+      "createdAt": "2025-12-09T19:47:18.101Z",
+      "id": "w9RugkEeasnJt107",
+      "name": "SYSTEM"
+    }
+  ]
+}
