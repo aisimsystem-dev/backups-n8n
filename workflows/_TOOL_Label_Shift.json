@@ -1,0 +1,665 @@
+{
+  "updatedAt": "2026-06-10T12:35:57.186Z",
+  "createdAt": "2026-05-01T04:40:29.526Z",
+  "id": "HdVNCC1cfb4aBZ6q",
+  "name": "[ TOOL ] Label · Shift",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "unique_id"
+            },
+            {
+              "name": "add_label"
+            },
+            {
+              "name": "remove_label"
+            }
+          ]
+        }
+      },
+      "id": "b0d2e1a5-20e3-471c-83ac-94cdf3419775",
+      "typeVersion": 1.1,
+      "name": "Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        0,
+        0
+      ],
+      "notes": "Recebe: unique_id (string), add_label (string), remove_label (string)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.item.json;\nconst parts = (input.unique_id || '').split('-');\n\nif (parts.length < 3) {\n  throw new Error('unique_id inválido: ' + input.unique_id);\n}\n\nreturn {\n  json: {\n    account_id:      parseInt(parts[0]),\n    inbox_id:        parseInt(parts[1]),\n    conversation_id: parseInt(parts[2]),\n    add_label:       (input.add_label    || '').trim(),\n    remove_label:    (input.remove_label || '').trim(),\n    unique_id:       input.unique_id\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "59d75354-d0dd-46b6-b4c5-4904041121c7",
+      "name": "Parse_IDs",
+      "notes": "Valida e extrai account_id, inbox_id, conversation_id do unique_id"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT base_url, user_token\nFROM system_projects\nWHERE account_id = {{ $json.account_id }}\n  AND is_active = true\nLIMIT 1;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        448,
+        0
+      ],
+      "id": "4f0f90c0-e342-47ac-aa75-4de7e13298a8",
+      "name": "Get_Config",
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      },
+      "notes": "Busca base_url e user_token do projeto ativo"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "guard-config",
+              "leftValue": "={{ $json.base_url }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        0
+      ],
+      "id": "4646dd1d-437a-45b5-8cc5-0d3f2018f9f2",
+      "name": "Filter_Config",
+      "notes": "⛔ Para execução silenciosamente se projeto não encontrado ou inativo"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.base_url }}/api/v1/accounts/{{ $('Parse_IDs').item.json.account_id }}/conversations/{{ $('Parse_IDs').item.json.conversation_id }}/labels",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "={{ $json.user_token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        896,
+        0
+      ],
+      "id": "2420cb9f-9521-46e6-aa32-5933f069ceaf",
+      "name": "GET_Labels",
+      "notes": "Busca labels atuais da conversa no Chatwoot"
+    },
+    {
+      "parameters": {
+        "jsCode": "let labels       = $json.body?.payload || [];\nconst remove     = $('Parse_IDs').item.json.remove_label;\nconst add        = $('Parse_IDs').item.json.add_label;\nconst base_url   = $('Get_Config').item.json.base_url;\nconst user_token = $('Get_Config').item.json.user_token;\nconst account_id      = $('Parse_IDs').item.json.account_id;\nconst conversation_id = $('Parse_IDs').item.json.conversation_id;\n\nif (remove) labels = labels.filter(l => l !== remove);\nif (add && !labels.includes(add)) labels.push(add);\n\nreturn {\n  json: { labels, base_url, user_token, account_id, conversation_id }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "9f3320c5-3612-4d18-9772-e7c6e812b99b",
+      "name": "Merge_Labels",
+      "notes": "Adiciona e/ou remove labels do array. Só toca no que foi pedido."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.base_url }}/api/v1/accounts/{{ $json.account_id }}/conversations/{{ $json.conversation_id }}/labels",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "={{ $json.user_token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ labels: $json.labels }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1344,
+        0
+      ],
+      "id": "2910e026-a547-4e94-960a-94d66e750da3",
+      "name": "POST_Labels",
+      "notes": "Envia array de labels atualizado para o Chatwoot"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r01",
+              "name": "success",
+              "value": "={{ $json.statusCode >= 200 && $json.statusCode < 300 }}",
+              "type": "boolean"
+            },
+            {
+              "id": "r02",
+              "name": "message",
+              "value": "={{ $json.statusCode >= 200 && $json.statusCode < 300 ? 'Labels atualizadas com sucesso.' : 'Erro ao atualizar labels: ' + $json.statusCode }}",
+              "type": "string"
+            },
+            {
+              "id": "r03",
+              "name": "labels",
+              "value": "={{ $json.body?.payload || [] }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1568,
+        0
+      ],
+      "id": "9d53bd96-2d0b-411b-92c2-3cf479228628",
+      "name": "SET_RESPONSE",
+      "notes": "Retorna: success (bool), message (string), labels (array com estado final)"
+    }
+  ],
+  "connections": {
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "Parse_IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse_IDs": {
+      "main": [
+        [
+          {
+            "node": "Get_Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Config": {
+      "main": [
+        [
+          {
+            "node": "Filter_Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter_Config": {
+      "main": [
+        [
+          {
+            "node": "GET_Labels",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET_Labels": {
+      "main": [
+        [
+          {
+            "node": "Merge_Labels",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge_Labels": {
+      "main": [
+        [
+          {
+            "node": "POST_Labels",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST_Labels": {
+      "main": [
+        [
+          {
+            "node": "SET_RESPONSE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Trigger": [
+      {
+        "json": {
+          "unique_id": "82-130-1",
+          "add_label": "qualificado",
+          "remove_label": "novo"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "71b61002-c22e-464f-921b-52c039d40932",
+  "activeVersionId": "71b61002-c22e-464f-921b-52c039d40932",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-01T04:40:29.526Z",
+      "createdAt": "2026-05-01T04:40:29.526Z",
+      "role": "workflow:owner",
+      "workflowId": "HdVNCC1cfb4aBZ6q",
+      "projectId": "biUQguab5U7Obw0N"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-05T10:31:07.183Z",
+    "createdAt": "2026-05-03T03:02:59.094Z",
+    "versionId": "71b61002-c22e-464f-921b-52c039d40932",
+    "workflowId": "HdVNCC1cfb4aBZ6q",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "unique_id"
+              },
+              {
+                "name": "add_label"
+              },
+              {
+                "name": "remove_label"
+              }
+            ]
+          }
+        },
+        "id": "b0d2e1a5-20e3-471c-83ac-94cdf3419775",
+        "typeVersion": 1.1,
+        "name": "Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "position": [
+          0,
+          0
+        ],
+        "notes": "Recebe: unique_id (string), add_label (string), remove_label (string)"
+      },
+      {
+        "parameters": {
+          "jsCode": "const input = $input.item.json;\nconst parts = (input.unique_id || '').split('-');\n\nif (parts.length < 3) {\n  throw new Error('unique_id inválido: ' + input.unique_id);\n}\n\nreturn {\n  json: {\n    account_id:      parseInt(parts[0]),\n    inbox_id:        parseInt(parts[1]),\n    conversation_id: parseInt(parts[2]),\n    add_label:       (input.add_label    || '').trim(),\n    remove_label:    (input.remove_label || '').trim(),\n    unique_id:       input.unique_id\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          224,
+          0
+        ],
+        "id": "59d75354-d0dd-46b6-b4c5-4904041121c7",
+        "name": "Parse_IDs",
+        "notes": "Valida e extrai account_id, inbox_id, conversation_id do unique_id"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT base_url, user_token\nFROM system_projects\nWHERE account_id = {{ $json.account_id }}\n  AND is_active = true\nLIMIT 1;",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          448,
+          0
+        ],
+        "id": "4f0f90c0-e342-47ac-aa75-4de7e13298a8",
+        "name": "Get_Config",
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        },
+        "notes": "Busca base_url e user_token do projeto ativo"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "guard-config",
+                "leftValue": "={{ $json.base_url }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          672,
+          0
+        ],
+        "id": "4646dd1d-437a-45b5-8cc5-0d3f2018f9f2",
+        "name": "Filter_Config",
+        "notes": "⛔ Para execução silenciosamente se projeto não encontrado ou inativo"
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.base_url }}/api/v1/accounts/{{ $('Parse_IDs').item.json.account_id }}/conversations/{{ $('Parse_IDs').item.json.conversation_id }}/labels",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "={{ $json.user_token }}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true,
+                "neverError": true
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          896,
+          0
+        ],
+        "id": "2420cb9f-9521-46e6-aa32-5933f069ceaf",
+        "name": "GET_Labels",
+        "notes": "Busca labels atuais da conversa no Chatwoot"
+      },
+      {
+        "parameters": {
+          "jsCode": "let labels       = $json.body?.payload || [];\nconst remove     = $('Parse_IDs').item.json.remove_label;\nconst add        = $('Parse_IDs').item.json.add_label;\nconst base_url   = $('Get_Config').item.json.base_url;\nconst user_token = $('Get_Config').item.json.user_token;\nconst account_id      = $('Parse_IDs').item.json.account_id;\nconst conversation_id = $('Parse_IDs').item.json.conversation_id;\n\nif (remove) labels = labels.filter(l => l !== remove);\nif (add && !labels.includes(add)) labels.push(add);\n\nreturn {\n  json: { labels, base_url, user_token, account_id, conversation_id }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1120,
+          0
+        ],
+        "id": "9f3320c5-3612-4d18-9772-e7c6e812b99b",
+        "name": "Merge_Labels",
+        "notes": "Adiciona e/ou remove labels do array. Só toca no que foi pedido."
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $json.base_url }}/api/v1/accounts/{{ $json.account_id }}/conversations/{{ $json.conversation_id }}/labels",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "={{ $json.user_token }}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ labels: $json.labels }) }}",
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true,
+                "neverError": true
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1344,
+          0
+        ],
+        "id": "2910e026-a547-4e94-960a-94d66e750da3",
+        "name": "POST_Labels",
+        "notes": "Envia array de labels atualizado para o Chatwoot"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "r01",
+                "name": "success",
+                "value": "={{ $json.statusCode >= 200 && $json.statusCode < 300 }}",
+                "type": "boolean"
+              },
+              {
+                "id": "r02",
+                "name": "message",
+                "value": "={{ $json.statusCode >= 200 && $json.statusCode < 300 ? 'Labels atualizadas com sucesso.' : 'Erro ao atualizar labels: ' + $json.statusCode }}",
+                "type": "string"
+              },
+              {
+                "id": "r03",
+                "name": "labels",
+                "value": "={{ $json.body?.payload || [] }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1568,
+          0
+        ],
+        "id": "9d53bd96-2d0b-411b-92c2-3cf479228628",
+        "name": "SET_RESPONSE",
+        "notes": "Retorna: success (bool), message (string), labels (array com estado final)"
+      }
+    ],
+    "connections": {
+      "Trigger": {
+        "main": [
+          [
+            {
+              "node": "Parse_IDs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse_IDs": {
+        "main": [
+          [
+            {
+              "node": "Get_Config",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_Config": {
+        "main": [
+          [
+            {
+              "node": "Filter_Config",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter_Config": {
+        "main": [
+          [
+            {
+              "node": "GET_Labels",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET_Labels": {
+        "main": [
+          [
+            {
+              "node": "Merge_Labels",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge_Labels": {
+        "main": [
+          [
+            {
+              "node": "POST_Labels",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "POST_Labels": {
+        "main": [
+          [
+            {
+              "node": "SET_RESPONSE",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "System AI SIM",
+    "name": "Version 71b61002",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": [
+    {
+      "updatedAt": "2026-06-10T12:30:02.035Z",
+      "createdAt": "2026-06-10T12:30:02.035Z",
+      "id": "dQiugrS0okCvZHoj",
+      "name": "github"
+    }
+  ]
+}
