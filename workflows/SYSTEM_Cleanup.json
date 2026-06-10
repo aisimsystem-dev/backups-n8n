@@ -1,0 +1,151 @@
+{
+  "updatedAt": "2026-06-10T12:36:07.918Z",
+  "createdAt": "2026-05-01T05:31:54.517Z",
+  "id": "Fwc1JO7Yb7brizPL",
+  "name": "SYSTEM · Cleanup",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        -176
+      ],
+      "id": "645bd948-03ad-4d29-8c9c-9cc881deb708",
+      "name": "Schedule",
+      "notes": "Roda 1x por dia. Ajuste o horário conforme necessidade."
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT cleanup_chat_histories(50) as result;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        144,
+        -176
+      ],
+      "id": "80f55ce5-8040-4208-805a-e5d4cfc63105",
+      "name": "CLEANUP_HISTORIES",
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      },
+      "continueOnFail": true,
+      "notes": "Mantém as últimas 50 mensagens por session_id. Deleta o resto."
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r01",
+              "name": "ok",
+              "value": "={{ $json.result?.ok || false }}",
+              "type": "boolean"
+            },
+            {
+              "id": "r02",
+              "name": "deleted",
+              "value": "={{ $json.result?.deleted || 0 }}",
+              "type": "number"
+            },
+            {
+              "id": "r03",
+              "name": "kept_per_session",
+              "value": "={{ $json.result?.kept_per_session || 50 }}",
+              "type": "number"
+            },
+            {
+              "id": "r04",
+              "name": "ran_at",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        384,
+        -176
+      ],
+      "id": "2e1d6244-24a8-4612-83c2-5deb2a3c7286",
+      "name": "LOG_RESULT",
+      "notes": "Retorna: ok, deleted (qtd removida), kept_per_session, ran_at"
+    }
+  ],
+  "connections": {
+    "Schedule": {
+      "main": [
+        [
+          {
+            "node": "CLEANUP_HISTORIES",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CLEANUP_HISTORIES": {
+      "main": [
+        [
+          {
+            "node": "LOG_RESULT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "77703d5e-c956-4596-a462-2fc34c820d73",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-01T05:31:54.517Z",
+      "createdAt": "2026-05-01T05:31:54.517Z",
+      "role": "workflow:owner",
+      "workflowId": "Fwc1JO7Yb7brizPL",
+      "projectId": "biUQguab5U7Obw0N"
+    }
+  ],
+  "activeVersion": null,
+  "tags": [
+    {
+      "updatedAt": "2026-06-10T12:30:02.035Z",
+      "createdAt": "2026-06-10T12:30:02.035Z",
+      "id": "dQiugrS0okCvZHoj",
+      "name": "github"
+    }
+  ]
+}
