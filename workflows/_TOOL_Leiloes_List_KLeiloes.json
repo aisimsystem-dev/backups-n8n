@@ -1,0 +1,250 @@
+{
+  "updatedAt": "2026-06-10T12:33:18.150Z",
+  "createdAt": "2026-05-05T02:19:02.895Z",
+  "id": "1aSFNa8p5G6TbWzj",
+  "name": "[ TOOL ] Leilões · List · KLeilões",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "unique_id"
+            }
+          ]
+        }
+      },
+      "id": "trigger-1",
+      "name": "Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r01",
+              "name": "unique_id",
+              "value": "={{ $('Trigger').item.json.unique_id }}",
+              "type": "string"
+            },
+            {
+              "id": "r02",
+              "name": "total",
+              "value": "={{ $json.count }}",
+              "type": "number"
+            },
+            {
+              "id": "r03",
+              "name": "leiloes",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "respond-1",
+      "name": "SET_RESPONSE",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://admkl.emps.online/n8n?table=leiloes",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "http-1",
+      "name": "GET Leilões",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "GET Leilões",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Leilões": {
+      "main": [
+        [
+          {
+            "node": "SET_RESPONSE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Trigger": [
+      {
+        "json": {
+          "unique_id": "83-131-4"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "bab9885e-9dcc-4002-89e9-e7c20a8a3a40",
+  "activeVersionId": "bab9885e-9dcc-4002-89e9-e7c20a8a3a40",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-05T02:19:02.895Z",
+      "createdAt": "2026-05-05T02:19:02.895Z",
+      "role": "workflow:owner",
+      "workflowId": "1aSFNa8p5G6TbWzj",
+      "projectId": "biUQguab5U7Obw0N"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-29T16:17:01.801Z",
+    "createdAt": "2026-05-29T16:16:59.681Z",
+    "versionId": "bab9885e-9dcc-4002-89e9-e7c20a8a3a40",
+    "workflowId": "1aSFNa8p5G6TbWzj",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "unique_id"
+              }
+            ]
+          }
+        },
+        "id": "trigger-1",
+        "name": "Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "r01",
+                "name": "unique_id",
+                "value": "={{ $('Trigger').item.json.unique_id }}",
+                "type": "string"
+              },
+              {
+                "id": "r02",
+                "name": "total",
+                "value": "={{ $json.count }}",
+                "type": "number"
+              },
+              {
+                "id": "r03",
+                "name": "leiloes",
+                "value": "={{ $json.data }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "respond-1",
+        "name": "SET_RESPONSE",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          480,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://admkl.emps.online/n8n?table=leiloes",
+          "options": {
+            "timeout": 15000
+          }
+        },
+        "id": "http-1",
+        "name": "GET Leilões",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          240,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "Trigger": {
+        "main": [
+          [
+            {
+              "node": "GET Leilões",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET Leilões": {
+        "main": [
+          [
+            {
+              "node": "SET_RESPONSE",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "System AI SIM",
+    "name": "Version bab9885e",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": [
+    {
+      "updatedAt": "2026-06-10T12:30:02.035Z",
+      "createdAt": "2026-06-10T12:30:02.035Z",
+      "id": "dQiugrS0okCvZHoj",
+      "name": "github"
+    }
+  ]
+}
