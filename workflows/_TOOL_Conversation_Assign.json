@@ -1,0 +1,685 @@
+{
+  "updatedAt": "2026-06-10T12:35:21.022Z",
+  "createdAt": "2026-05-01T04:50:58.854Z",
+  "id": "tsGH3L6FaXe3xo6d",
+  "name": "[ TOOL ] Conversation · Assign",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "unique_id"
+            },
+            {
+              "name": "assignee_id"
+            },
+            {
+              "name": "note"
+            }
+          ]
+        }
+      },
+      "id": "958bef62-1fe0-41ac-ba05-74af15110da9",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        0,
+        0
+      ],
+      "notes": "Recebe: unique_id (string), assignee_id (number), note (string, opcional)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.item.json;\nconst parts = (input.unique_id || '').split('-');\n\nif (parts.length < 3) {\n  return { json: { success: false, error: 'unique_id inválido: ' + input.unique_id } };\n}\n\nconst note = (input.note || '').trim();\n\nreturn {\n  json: {\n    account_id:      parseInt(parts[0]),\n    inbox_id:        parseInt(parts[1]),\n    conversation_id: parseInt(parts[2]),\n    assignee_id:     parseInt(input.assignee_id),\n    note:            note,\n    unique_id:       input.unique_id\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "id": "bd7cfb5b-9af6-4633-81c5-739194948295",
+      "name": "Parse_IDs",
+      "notes": "Extrai account_id, inbox_id, conversation_id do unique_id. Preserva note."
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT base_url, user_token FROM system_projects WHERE account_id = {{ $json.account_id }} AND is_active = true LIMIT 1;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        480,
+        0
+      ],
+      "id": "9165cf28-a22a-4c98-b71c-c62333d7a2b7",
+      "name": "Get_Config",
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      },
+      "notes": "Busca base_url e user_token do projeto ativo"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Get_Config').item.json.base_url }}/api/v1/accounts/{{ $('Parse_IDs').item.json.account_id }}/agents/{{ $('Parse_IDs').item.json.assignee_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "={{ $('Get_Config').item.json.user_token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        736,
+        0
+      ],
+      "id": "48ba1c26-883a-4b13-900f-4743318ef552",
+      "name": "GET_Agent",
+      "notes": "Busca nome do agente pelo assignee_id para montar o @mention"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Get_Config').item.json.base_url }}/api/v1/accounts/{{ $('Parse_IDs').item.json.account_id }}/conversations/{{ $('Parse_IDs').item.json.conversation_id }}/assignments",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "={{ $('Get_Config').item.json.user_token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ assignee_id: $('Parse_IDs').item.json.assignee_id }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        976,
+        0
+      ],
+      "id": "bef6946c-b717-4cb6-b5ca-7ee427008b3e",
+      "name": "POST_Assign",
+      "notes": "Atribui a conversa ao agente"
+    },
+    {
+      "parameters": {
+        "jsCode": "const agentBody   = $('GET_Agent').item.json.body || {};\nconst agentName   = agentBody.name || 'agente';\nconst customNote  = ($('Parse_IDs').item.json.note || '').trim();\n\nconst defaultNote = 'Você foi atribuído(a) a esta conversa.';\nconst noteText    = customNote || defaultNote;\n\nconst content = `@${agentName} ${noteText}`;\n\nreturn {\n  json: {\n    content,\n    agent_name: agentName\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1216,
+        0
+      ],
+      "id": "9eb5d08b-1120-42f6-ac2d-5342a2a798a1",
+      "name": "Build_Note",
+      "notes": "Monta conteúdo da nota privada com @mention. Usa note customizada ou fallback padrão."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Get_Config').item.json.base_url }}/api/v1/accounts/{{ $('Parse_IDs').item.json.account_id }}/conversations/{{ $('Parse_IDs').item.json.conversation_id }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "={{ $('Get_Config').item.json.user_token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ content: $json.content, message_type: 'outgoing', private: true }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1456,
+        0
+      ],
+      "id": "ad42e8c0-22a3-488e-ab42-bb11b1af74f1",
+      "name": "POST_Private_Note",
+      "notes": "Envia nota privada com @mention do agente atribuído"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r01",
+              "name": "success",
+              "value": "={{ $('POST_Assign').item.json.statusCode >= 200 && $('POST_Assign').item.json.statusCode < 300 }}",
+              "type": "boolean"
+            },
+            {
+              "id": "r02",
+              "name": "message",
+              "value": "={{ $('POST_Assign').item.json.statusCode >= 200 && $('POST_Assign').item.json.statusCode < 300 ? 'Conversa atribuída e nota privada enviada com @' + $('Build_Note').item.json.agent_name + '.' : 'Erro ao atribuir conversa: ' + $('POST_Assign').item.json.statusCode }}",
+              "type": "string"
+            },
+            {
+              "id": "r03",
+              "name": "assignee",
+              "value": "={{ $('POST_Assign').item.json.body?.meta?.assignee || {} }}",
+              "type": "object"
+            },
+            {
+              "id": "r04",
+              "name": "note_sent",
+              "value": "={{ $('POST_Private_Note').item.json.statusCode >= 200 && $('POST_Private_Note').item.json.statusCode < 300 }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1696,
+        0
+      ],
+      "id": "a5870c1d-05e9-44db-8cdd-a3eafd3a370d",
+      "name": "SET_RESPONSE",
+      "notes": "Retorna: success, message, assignee e note_sent"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Parse_IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse_IDs": {
+      "main": [
+        [
+          {
+            "node": "Get_Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Config": {
+      "main": [
+        [
+          {
+            "node": "GET_Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET_Agent": {
+      "main": [
+        [
+          {
+            "node": "POST_Assign",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST_Assign": {
+      "main": [
+        [
+          {
+            "node": "Build_Note",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build_Note": {
+      "main": [
+        [
+          {
+            "node": "POST_Private_Note",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST_Private_Note": {
+      "main": [
+        [
+          {
+            "node": "SET_RESPONSE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "unique_id": "82-130-1",
+          "assignee_id": "212",
+          "note": "Favor verificar o histórico antes de responder."
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "1dffe6ac-ceb9-42a2-b680-8809a1307b28",
+  "activeVersionId": "1dffe6ac-ceb9-42a2-b680-8809a1307b28",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-01T04:50:58.854Z",
+      "createdAt": "2026-05-01T04:50:58.854Z",
+      "role": "workflow:owner",
+      "workflowId": "tsGH3L6FaXe3xo6d",
+      "projectId": "biUQguab5U7Obw0N"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-05T10:31:55.241Z",
+    "createdAt": "2026-05-05T10:31:51.739Z",
+    "versionId": "1dffe6ac-ceb9-42a2-b680-8809a1307b28",
+    "workflowId": "tsGH3L6FaXe3xo6d",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "unique_id"
+              },
+              {
+                "name": "assignee_id"
+              },
+              {
+                "name": "note"
+              }
+            ]
+          }
+        },
+        "id": "958bef62-1fe0-41ac-ba05-74af15110da9",
+        "typeVersion": 1.1,
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "position": [
+          0,
+          0
+        ],
+        "notes": "Recebe: unique_id (string), assignee_id (number), note (string, opcional)"
+      },
+      {
+        "parameters": {
+          "jsCode": "const input = $input.item.json;\nconst parts = (input.unique_id || '').split('-');\n\nif (parts.length < 3) {\n  return { json: { success: false, error: 'unique_id inválido: ' + input.unique_id } };\n}\n\nconst note = (input.note || '').trim();\n\nreturn {\n  json: {\n    account_id:      parseInt(parts[0]),\n    inbox_id:        parseInt(parts[1]),\n    conversation_id: parseInt(parts[2]),\n    assignee_id:     parseInt(input.assignee_id),\n    note:            note,\n    unique_id:       input.unique_id\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          240,
+          0
+        ],
+        "id": "bd7cfb5b-9af6-4633-81c5-739194948295",
+        "name": "Parse_IDs",
+        "notes": "Extrai account_id, inbox_id, conversation_id do unique_id. Preserva note."
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT base_url, user_token FROM system_projects WHERE account_id = {{ $json.account_id }} AND is_active = true LIMIT 1;",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          480,
+          0
+        ],
+        "id": "9165cf28-a22a-4c98-b71c-c62333d7a2b7",
+        "name": "Get_Config",
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        },
+        "notes": "Busca base_url e user_token do projeto ativo"
+      },
+      {
+        "parameters": {
+          "url": "={{ $('Get_Config').item.json.base_url }}/api/v1/accounts/{{ $('Parse_IDs').item.json.account_id }}/agents/{{ $('Parse_IDs').item.json.assignee_id }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "={{ $('Get_Config').item.json.user_token }}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true,
+                "neverError": true
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          736,
+          0
+        ],
+        "id": "48ba1c26-883a-4b13-900f-4743318ef552",
+        "name": "GET_Agent",
+        "notes": "Busca nome do agente pelo assignee_id para montar o @mention"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Get_Config').item.json.base_url }}/api/v1/accounts/{{ $('Parse_IDs').item.json.account_id }}/conversations/{{ $('Parse_IDs').item.json.conversation_id }}/assignments",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "={{ $('Get_Config').item.json.user_token }}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ assignee_id: $('Parse_IDs').item.json.assignee_id }) }}",
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true,
+                "neverError": true
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          976,
+          0
+        ],
+        "id": "bef6946c-b717-4cb6-b5ca-7ee427008b3e",
+        "name": "POST_Assign",
+        "notes": "Atribui a conversa ao agente"
+      },
+      {
+        "parameters": {
+          "jsCode": "const agentBody   = $('GET_Agent').item.json.body || {};\nconst agentName   = agentBody.name || 'agente';\nconst customNote  = ($('Parse_IDs').item.json.note || '').trim();\n\nconst defaultNote = 'Você foi atribuído(a) a esta conversa.';\nconst noteText    = customNote || defaultNote;\n\nconst content = `@${agentName} ${noteText}`;\n\nreturn {\n  json: {\n    content,\n    agent_name: agentName\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1216,
+          0
+        ],
+        "id": "9eb5d08b-1120-42f6-ac2d-5342a2a798a1",
+        "name": "Build_Note",
+        "notes": "Monta conteúdo da nota privada com @mention. Usa note customizada ou fallback padrão."
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Get_Config').item.json.base_url }}/api/v1/accounts/{{ $('Parse_IDs').item.json.account_id }}/conversations/{{ $('Parse_IDs').item.json.conversation_id }}/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "={{ $('Get_Config').item.json.user_token }}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ content: $json.content, message_type: 'outgoing', private: true }) }}",
+          "options": {
+            "response": {
+              "response": {
+                "fullResponse": true,
+                "neverError": true
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1456,
+          0
+        ],
+        "id": "ad42e8c0-22a3-488e-ab42-bb11b1af74f1",
+        "name": "POST_Private_Note",
+        "notes": "Envia nota privada com @mention do agente atribuído"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "r01",
+                "name": "success",
+                "value": "={{ $('POST_Assign').item.json.statusCode >= 200 && $('POST_Assign').item.json.statusCode < 300 }}",
+                "type": "boolean"
+              },
+              {
+                "id": "r02",
+                "name": "message",
+                "value": "={{ $('POST_Assign').item.json.statusCode >= 200 && $('POST_Assign').item.json.statusCode < 300 ? 'Conversa atribuída e nota privada enviada com @' + $('Build_Note').item.json.agent_name + '.' : 'Erro ao atribuir conversa: ' + $('POST_Assign').item.json.statusCode }}",
+                "type": "string"
+              },
+              {
+                "id": "r03",
+                "name": "assignee",
+                "value": "={{ $('POST_Assign').item.json.body?.meta?.assignee || {} }}",
+                "type": "object"
+              },
+              {
+                "id": "r04",
+                "name": "note_sent",
+                "value": "={{ $('POST_Private_Note').item.json.statusCode >= 200 && $('POST_Private_Note').item.json.statusCode < 300 }}",
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1696,
+          0
+        ],
+        "id": "a5870c1d-05e9-44db-8cdd-a3eafd3a370d",
+        "name": "SET_RESPONSE",
+        "notes": "Retorna: success, message, assignee e note_sent"
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Parse_IDs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse_IDs": {
+        "main": [
+          [
+            {
+              "node": "Get_Config",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_Config": {
+        "main": [
+          [
+            {
+              "node": "GET_Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET_Agent": {
+        "main": [
+          [
+            {
+              "node": "POST_Assign",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "POST_Assign": {
+        "main": [
+          [
+            {
+              "node": "Build_Note",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build_Note": {
+        "main": [
+          [
+            {
+              "node": "POST_Private_Note",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "POST_Private_Note": {
+        "main": [
+          [
+            {
+              "node": "SET_RESPONSE",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "System AI SIM",
+    "name": "Version 1dffe6ac",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": [
+    {
+      "updatedAt": "2026-06-10T12:30:02.035Z",
+      "createdAt": "2026-06-10T12:30:02.035Z",
+      "id": "dQiugrS0okCvZHoj",
+      "name": "github"
+    }
+  ]
+}
