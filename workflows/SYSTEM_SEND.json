@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-10T12:35:10.171Z",
+  "updatedAt": "2026-06-10T20:41:10.126Z",
   "createdAt": "2026-05-01T05:17:58.422Z",
   "id": "NIuO5RIFEtCd1kdi",
   "name": "SYSTEM · SEND",
@@ -363,7 +363,10 @@
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
-    "availableInMCP": false
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "TaLOAW8gj0JIGTwW",
+    "callerPolicy": "workflowsFromSameOwner"
   },
   "staticData": null,
   "meta": {
