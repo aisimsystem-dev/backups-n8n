@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-10T12:35:32.161Z",
+  "updatedAt": "2026-06-10T20:39:36.578Z",
   "createdAt": "2026-05-01T04:57:52.160Z",
   "id": "o1HDwcjYVzTDoEsq",
   "name": "[ TOOL ] Contact · Patch",
@@ -199,7 +199,10 @@
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
-    "availableInMCP": false
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "TaLOAW8gj0JIGTwW",
+    "callerPolicy": "workflowsFromSameOwner"
   },
   "staticData": null,
   "meta": {
