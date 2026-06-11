@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-10T12:32:57.689Z",
+  "updatedAt": "2026-06-10T20:43:45.455Z",
   "createdAt": "2026-05-05T08:28:17.455Z",
   "id": "N261pFWbY3px5OYL",
   "name": "[ TOOL ] Bens · Search · KLeilões",
@@ -25,11 +25,11 @@
           ]
         }
       },
-      "id": "de4d13be-a6df-464f-a423-ca80154f6a76",
+      "id": "8cef591f-eeaa-45da-98f5-115e9260dc42",
       "name": "Trigger",
       "position": [
-        2240,
-        656
+        3488,
+        1168
       ],
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1
@@ -59,11 +59,11 @@
         },
         "options": {}
       },
-      "id": "cfbd9e1e-a907-4fd1-a927-c64d5096da74",
+      "id": "c52f9af9-e1ea-49ea-84a8-cb6f40e8a18c",
       "name": "Filter_Categoria",
       "position": [
-        2400,
-        496
+        3808,
+        1008
       ],
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2
@@ -93,11 +93,11 @@
         },
         "options": {}
       },
-      "id": "fce359f3-769b-4de3-855b-97a46a0f0058",
+      "id": "44f06fe8-bffe-4ae3-9053-e7554e87c223",
       "name": "Filter_TipoBem",
       "position": [
-        2400,
-        656
+        3808,
+        1168
       ],
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2
@@ -127,11 +127,11 @@
         },
         "options": {}
       },
-      "id": "c3cee0ad-4d92-4690-bcd5-3d7a5c37a834",
+      "id": "d3638c0e-fe37-445d-8365-adec65758c3d",
       "name": "Filter_Query",
       "position": [
-        2400,
-        816
+        3808,
+        1328
       ],
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2
@@ -143,11 +143,11 @@
           "timeout": 20000
         }
       },
-      "id": "b36ce4bd-9177-46fc-bfd8-b34a25a8b427",
+      "id": "c4976e89-15c3-4ce0-bbfa-2ce02d3b8ea5",
       "name": "GET_Categoria",
       "position": [
-        2640,
-        496
+        4048,
+        1008
       ],
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2
@@ -159,11 +159,11 @@
           "timeout": 20000
         }
       },
-      "id": "db245426-bfa8-4497-ba3d-bfe50ed71782",
+      "id": "e602aa14-43bd-4b09-aac6-aad9510eac8f",
       "name": "GET_TipoBem",
       "position": [
-        2640,
-        656
+        4048,
+        1168
       ],
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2
@@ -175,11 +175,11 @@
           "timeout": 20000
         }
       },
-      "id": "890adf37-3982-4db8-ac6b-65061cceb8cd",
+      "id": "517145e9-bfeb-43f8-9f53-398ee0090c73",
       "name": "GET_Query",
       "position": [
-        2640,
-        816
+        4048,
+        1328
       ],
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2
@@ -189,11 +189,11 @@
         "fieldToSplitOut": "data",
         "options": {}
       },
-      "id": "445b701a-a1b4-4058-92a7-195c0ad702c6",
+      "id": "a39ec9fa-5179-4972-892f-53ad80c242ee",
       "name": "Split_Categoria",
       "position": [
-        2848,
-        496
+        4256,
+        1008
       ],
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1
@@ -203,11 +203,11 @@
         "fieldToSplitOut": "data",
         "options": {}
       },
-      "id": "8320467d-c006-4d07-8c77-ed561b6d8913",
+      "id": "b8920b35-047a-4b23-ba67-b409354cc9c8",
       "name": "Split_TipoBem",
       "position": [
-        2848,
-        656
+        4256,
+        1168
       ],
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1
@@ -217,11 +217,11 @@
         "fieldToSplitOut": "data",
         "options": {}
       },
-      "id": "d64fcf96-9c3f-4e8b-a268-b26d09e4eeb3",
+      "id": "f7ba489b-9aba-4609-b1bc-fd965b889878",
       "name": "Split_Query",
       "position": [
-        2848,
-        816
+        4256,
+        1328
       ],
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1
@@ -230,24 +230,24 @@
       "parameters": {
         "numberInputs": 3
       },
-      "id": "21d55f3e-4d27-4f17-a46d-76af0ab9c418",
+      "id": "da9a0838-83c8-487a-9e11-55c2c0cb1271",
       "name": "Merge",
       "position": [
-        3072,
-        640
+        4480,
+        1152
       ],
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3
     },
     {
       "parameters": {
-        "jsCode": "const itens = $input.all().map(i => i.json);\n\n// dedup por id (mantém primeira ocorrência)\nconst vistos = new Set();\nconst lotes = [];\nfor (const lote of itens) {\n  const id = lote.id;\n  if (id == null) { lotes.push(lote); continue; }\n  if (vistos.has(id)) continue;\n  vistos.add(id);\n  lotes.push(lote);\n}\n\nreturn [{\n  json: {\n    unique_id: $('Trigger').first().json.unique_id,\n    total: lotes.length,\n    lotes: lotes\n  }\n}];"
+        "jsCode": "const itens = $input.all().map(i => i.json);\nconst termo = (($('Trigger').first().json.q || '') + '').trim().toLowerCase();\n\n// dedup por id (mantém primeira ocorrência)\nconst vistos = new Set();\nconst unicos = [];\nfor (const lote of itens) {\n  const id = lote.id;\n  if (id == null) { unicos.push(lote); continue; }\n  if (vistos.has(id)) continue;\n  vistos.add(id);\n  unicos.push(lote);\n}\n\n// função: lote casa com o termo do q?\nfunction casaComTermo(lote, termo) {\n  if (!termo) return false;\n  const campos = [\n    lote.descricao, lote.titulo, lote.nome, lote.tipo_bem,\n    lote.categoria, lote.cidade, lote.municipio, lote.uf, lote.bem\n  ];\n  const texto = campos.filter(Boolean).join(' ').toLowerCase();\n  return texto.includes(termo);\n}\n\n// ordena: quem casa com o termo do q vai primeiro, mantém ordem relativa dentro de cada grupo\nlet lotes = unicos;\nif (termo) {\n  const batem = [];\n  const resto = [];\n  for (const lote of unicos) {\n    if (casaComTermo(lote, termo)) batem.push(lote);\n    else resto.push(lote);\n  }\n  lotes = [...batem, ...resto];\n}\n\nreturn [{\n  json: {\n    unique_id: $('Trigger').first().json.unique_id,\n    total: lotes.length,\n    lotes: lotes\n  }\n}];"
       },
-      "id": "92e0f77d-fa96-425d-b319-803af8f05f22",
+      "id": "f38308f1-232c-4ddd-8270-379511d9ba0e",
       "name": "SET_RESPONSE",
       "position": [
-        3296,
-        656
+        4704,
+        1168
       ],
       "type": "n8n-nodes-base.code",
       "typeVersion": 2
@@ -390,7 +390,9 @@
     "executionOrder": "v1",
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false,
-    "binaryMode": "separate"
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "TaLOAW8gj0JIGTwW"
   },
   "staticData": null,
   "meta": null,
@@ -399,15 +401,15 @@
       {
         "json": {
           "unique_id": "83-131-4",
-          "categoria": "",
-          "tipo_bem": "",
-          "q": "Monte Castelo"
+          "categoria": "Veículos",
+          "tipo_bem": "Carros",
+          "q": "Honda"
         }
       }
     ]
   },
-  "versionId": "7c7a49e7-5281-4ed3-878b-11ada0aaec56",
-  "activeVersionId": "7c7a49e7-5281-4ed3-878b-11ada0aaec56",
+  "versionId": "008865f4-20f1-4b55-baef-41392438671c",
+  "activeVersionId": "008865f4-20f1-4b55-baef-41392438671c",
   "triggerCount": 0,
   "shared": [
     {
@@ -419,9 +421,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-06-09T17:38:19.217Z",
-    "createdAt": "2026-06-09T17:38:05.886Z",
-    "versionId": "7c7a49e7-5281-4ed3-878b-11ada0aaec56",
+    "updatedAt": "2026-06-10T20:43:38.082Z",
+    "createdAt": "2026-06-10T18:15:31.001Z",
+    "versionId": "008865f4-20f1-4b55-baef-41392438671c",
     "workflowId": "N261pFWbY3px5OYL",
     "nodes": [
       {
@@ -443,11 +445,11 @@
             ]
           }
         },
-        "id": "de4d13be-a6df-464f-a423-ca80154f6a76",
+        "id": "8cef591f-eeaa-45da-98f5-115e9260dc42",
         "name": "Trigger",
         "position": [
-          2240,
-          656
+          3488,
+          1168
         ],
         "type": "n8n-nodes-base.executeWorkflowTrigger",
         "typeVersion": 1.1
@@ -477,11 +479,11 @@
           },
           "options": {}
         },
-        "id": "cfbd9e1e-a907-4fd1-a927-c64d5096da74",
+        "id": "c52f9af9-e1ea-49ea-84a8-cb6f40e8a18c",
         "name": "Filter_Categoria",
         "position": [
-          2400,
-          496
+          3808,
+          1008
         ],
         "type": "n8n-nodes-base.filter",
         "typeVersion": 2.2
@@ -511,11 +513,11 @@
           },
           "options": {}
         },
-        "id": "fce359f3-769b-4de3-855b-97a46a0f0058",
+        "id": "44f06fe8-bffe-4ae3-9053-e7554e87c223",
         "name": "Filter_TipoBem",
         "position": [
-          2400,
-          656
+          3808,
+          1168
         ],
         "type": "n8n-nodes-base.filter",
         "typeVersion": 2.2
@@ -545,11 +547,11 @@
           },
           "options": {}
         },
-        "id": "c3cee0ad-4d92-4690-bcd5-3d7a5c37a834",
+        "id": "d3638c0e-fe37-445d-8365-adec65758c3d",
         "name": "Filter_Query",
         "position": [
-          2400,
-          816
+          3808,
+          1328
         ],
         "type": "n8n-nodes-base.filter",
         "typeVersion": 2.2
@@ -561,11 +563,11 @@
             "timeout": 20000
           }
         },
-        "id": "b36ce4bd-9177-46fc-bfd8-b34a25a8b427",
+        "id": "c4976e89-15c3-4ce0-bbfa-2ce02d3b8ea5",
         "name": "GET_Categoria",
         "position": [
-          2640,
-          496
+          4048,
+          1008
         ],
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2
@@ -577,11 +579,11 @@
             "timeout": 20000
           }
         },
-        "id": "db245426-bfa8-4497-ba3d-bfe50ed71782",
+        "id": "e602aa14-43bd-4b09-aac6-aad9510eac8f",
         "name": "GET_TipoBem",
         "position": [
-          2640,
-          656
+          4048,
+          1168
         ],
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2
@@ -593,11 +595,11 @@
             "timeout": 20000
           }
         },
-        "id": "890adf37-3982-4db8-ac6b-65061cceb8cd",
+        "id": "517145e9-bfeb-43f8-9f53-398ee0090c73",
         "name": "GET_Query",
         "position": [
-          2640,
-          816
+          4048,
+          1328
         ],
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2
@@ -607,11 +609,11 @@
           "fieldToSplitOut": "data",
           "options": {}
         },
-        "id": "445b701a-a1b4-4058-92a7-195c0ad702c6",
+        "id": "a39ec9fa-5179-4972-892f-53ad80c242ee",
         "name": "Split_Categoria",
         "position": [
-          2848,
-          496
+          4256,
+          1008
         ],
         "type": "n8n-nodes-base.splitOut",
         "typeVersion": 1
@@ -621,11 +623,11 @@
           "fieldToSplitOut": "data",
           "options": {}
         },
-        "id": "8320467d-c006-4d07-8c77-ed561b6d8913",
+        "id": "b8920b35-047a-4b23-ba67-b409354cc9c8",
         "name": "Split_TipoBem",
         "position": [
-          2848,
-          656
+          4256,
+          1168
         ],
         "type": "n8n-nodes-base.splitOut",
         "typeVersion": 1
@@ -635,11 +637,11 @@
           "fieldToSplitOut": "data",
           "options": {}
         },
-        "id": "d64fcf96-9c3f-4e8b-a268-b26d09e4eeb3",
+        "id": "f7ba489b-9aba-4609-b1bc-fd965b889878",
         "name": "Split_Query",
         "position": [
-          2848,
-          816
+          4256,
+          1328
         ],
         "type": "n8n-nodes-base.splitOut",
         "typeVersion": 1
@@ -648,24 +650,24 @@
         "parameters": {
           "numberInputs": 3
         },
-        "id": "21d55f3e-4d27-4f17-a46d-76af0ab9c418",
+        "id": "da9a0838-83c8-487a-9e11-55c2c0cb1271",
         "name": "Merge",
         "position": [
-          3072,
-          640
+          4480,
+          1152
         ],
         "type": "n8n-nodes-base.merge",
         "typeVersion": 3
       },
       {
         "parameters": {
-          "jsCode": "const itens = $input.all().map(i => i.json);\n\n// dedup por id (mantém primeira ocorrência)\nconst vistos = new Set();\nconst lotes = [];\nfor (const lote of itens) {\n  const id = lote.id;\n  if (id == null) { lotes.push(lote); continue; }\n  if (vistos.has(id)) continue;\n  vistos.add(id);\n  lotes.push(lote);\n}\n\nreturn [{\n  json: {\n    unique_id: $('Trigger').first().json.unique_id,\n    total: lotes.length,\n    lotes: lotes\n  }\n}];"
+          "jsCode": "const itens = $input.all().map(i => i.json);\nconst termo = (($('Trigger').first().json.q || '') + '').trim().toLowerCase();\n\n// dedup por id (mantém primeira ocorrência)\nconst vistos = new Set();\nconst unicos = [];\nfor (const lote of itens) {\n  const id = lote.id;\n  if (id == null) { unicos.push(lote); continue; }\n  if (vistos.has(id)) continue;\n  vistos.add(id);\n  unicos.push(lote);\n}\n\n// função: lote casa com o termo do q?\nfunction casaComTermo(lote, termo) {\n  if (!termo) return false;\n  const campos = [\n    lote.descricao, lote.titulo, lote.nome, lote.tipo_bem,\n    lote.categoria, lote.cidade, lote.municipio, lote.uf, lote.bem\n  ];\n  const texto = campos.filter(Boolean).join(' ').toLowerCase();\n  return texto.includes(termo);\n}\n\n// ordena: quem casa com o termo do q vai primeiro, mantém ordem relativa dentro de cada grupo\nlet lotes = unicos;\nif (termo) {\n  const batem = [];\n  const resto = [];\n  for (const lote of unicos) {\n    if (casaComTermo(lote, termo)) batem.push(lote);\n    else resto.push(lote);\n  }\n  lotes = [...batem, ...resto];\n}\n\nreturn [{\n  json: {\n    unique_id: $('Trigger').first().json.unique_id,\n    total: lotes.length,\n    lotes: lotes\n  }\n}];"
         },
-        "id": "92e0f77d-fa96-425d-b319-803af8f05f22",
+        "id": "f38308f1-232c-4ddd-8270-379511d9ba0e",
         "name": "SET_RESPONSE",
         "position": [
-          3296,
-          656
+          4704,
+          1168
         ],
         "type": "n8n-nodes-base.code",
         "typeVersion": 2
@@ -805,7 +807,7 @@
       }
     },
     "authors": "System AI SIM",
-    "name": "Version 7c7a49e7",
+    "name": "Version 008865f4",
     "description": "",
     "autosaved": true
   },
