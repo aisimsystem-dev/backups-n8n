@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-10T12:34:49.591Z",
+  "updatedAt": "2026-06-11T02:45:12.854Z",
   "createdAt": "2026-05-01T02:54:52.892Z",
   "id": "lfu49lvSJTjUuhZN",
   "name": "SYSTEM · GATEWAY",
@@ -829,7 +829,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO n8n_chat_histories (session_id, message) VALUES ('{{ $('DATA').item.json.unique_id }}', '{{ JSON.stringify({ type: 'ai', content: '[' + $('DATA').item.json.message.source_type.toUpperCase() + '] ' + $('MensagemConsolidada').item.json.mensagem, tool_calls: [], additional_kwargs: {}, response_metadata: {}, invalid_tool_calls: [] }) }}')",
+        "query": "INSERT INTO system_chat_histories (session_id, message) VALUES ('{{ $('DATA').item.json.unique_id }}', '{{ JSON.stringify({ type: 'ai', content: '[' + $('DATA').item.json.message.source_type.toUpperCase() + '] ' + $('MensagemConsolidada').item.json.mensagem, tool_calls: [], additional_kwargs: {}, response_metadata: {}, invalid_tool_calls: [] }).replace(/'/g, \"''\") }}')",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
@@ -909,7 +909,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO n8n_chat_histories (session_id, message) VALUES ('{{ $('DATA').item.json.unique_id }}', '{{ JSON.stringify({ type: 'ai', content: 'CONTEXTO: ' + $('MensagemConsolidada').item.json.mensagem, tool_calls: [], additional_kwargs: {}, response_metadata: {}, invalid_tool_calls: [] }) }}')",
+        "query": "INSERT INTO system_chat_histories (session_id, message) VALUES ('{{ $('DATA').item.json.unique_id }}', '{{ JSON.stringify({ type: 'ai', content: 'CONTEXTO: ' + $('MensagemConsolidada').item.json.mensagem, tool_calls: [], additional_kwargs: {}, response_metadata: {}, invalid_tool_calls: [] }).replace(/'/g, \"''\") }}')",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
@@ -943,7 +943,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO n8n_chat_histories (session_id, message) VALUES ('{{ $('DATA').item.json.unique_id }}', '{{ JSON.stringify({ type: 'human', content: '[CLIENTE DURANTE ATENDIMENTO] ' + $('MensagemConsolidada').item.json.mensagem, tool_calls: [], additional_kwargs: {}, response_metadata: {}, invalid_tool_calls: [] }) }}')",
+        "query": "INSERT INTO system_chat_histories (session_id, message) VALUES ('{{ $('DATA').item.json.unique_id }}', '{{ JSON.stringify({ type: 'human', content: '[CLIENTE DURANTE ATENDIMENTO] ' + $('MensagemConsolidada').item.json.mensagem, tool_calls: [], additional_kwargs: {}, response_metadata: {}, invalid_tool_calls: [] }).replace(/'/g, \"''\") }}')",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
@@ -980,7 +980,7 @@
     {
       "parameters": {
         "operation": "set",
-        "key": "={{ String($('DATA').item.json.conversation.id) }}",
+        "key": "=lastmsg-{{ $('DATA').item.json.unique_id }}",
         "value": "={{ $json.currentDate }}",
         "keyType": "string",
         "expire": true,
@@ -1006,7 +1006,7 @@
       "parameters": {
         "operation": "get",
         "propertyName": "messageUser",
-        "key": "=inputMessage-{{ $('DATA').item.json.conversation.id }}",
+        "key": "=inputMessage-{{ $('DATA').item.json.unique_id }}",
         "keyType": "string",
         "options": {}
       },
@@ -1029,7 +1029,7 @@
     {
       "parameters": {
         "operation": "set",
-        "key": "=inputMessage-{{ $('DATA').item.json.conversation.id }}",
+        "key": "=inputMessage-{{ $('DATA').item.json.unique_id }}",
         "value": "={{ ($json.messageUser || '') + ($json.messageUser ? '\\n' : '') + $('MensagemConsolidada').item.json.mensagem }}",
         "keyType": "string",
         "expire": true,
@@ -1055,7 +1055,7 @@
       "parameters": {
         "operation": "get",
         "propertyName": "messageUser",
-        "key": "=inputMessage-{{ $('DATA').item.json.conversation.id }}",
+        "key": "=inputMessage-{{ $('DATA').item.json.unique_id }}",
         "options": {}
       },
       "type": "n8n-nodes-base.redis",
@@ -1166,7 +1166,7 @@
       "parameters": {
         "operation": "get",
         "propertyName": "currentDate",
-        "key": "={{ String($('DATA').item.json.conversation.id) }}",
+        "key": "=lastmsg-{{ $('DATA').item.json.unique_id }}",
         "keyType": "string",
         "options": {}
       },
@@ -1223,7 +1223,7 @@
     {
       "parameters": {
         "operation": "delete",
-        "key": "=inputMessage-{{ $('DATA').item.json.conversation.id }}"
+        "key": "=inputMessage-{{ $('DATA').item.json.unique_id }}"
       },
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
@@ -1484,7 +1484,7 @@
               "rightValue": "",
               "operator": {
                 "type": "string",
-                "operation": "exists",
+                "operation": "notEmpty",
                 "singleValue": true
               }
             }
@@ -1551,13 +1551,13 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('data').item.json.data.payload.meta.base_url }}/api/v1/accounts/{{ $('data').item.json.data.payload.meta.account_id }}/conversations/{{ $('data').item.json.data.payload.conversation.id }}/messages",
+        "url": "={{ $('BUILD_PAYLOAD').item.json.meta.base_url }}/api/v1/accounts/{{ $('BUILD_PAYLOAD').item.json.meta.account_id }}/conversations/{{ $('BUILD_PAYLOAD').item.json.conversation.id }}/messages",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "api_access_token",
-              "value": "={{ $('data').item.json.data.payload.project_bot.token }}"
+              "value": "={{ $('BUILD_PAYLOAD').item.json.project_bot.token }}"
             }
           ]
         },
@@ -3031,7 +3031,10 @@
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
-    "availableInMCP": false
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "TaLOAW8gj0JIGTwW",
+    "callerPolicy": "workflowsFromSameOwner"
   },
   "staticData": null,
   "meta": {
@@ -3263,8 +3266,8 @@
       }
     ]
   },
-  "versionId": "7a4ce199-c7c4-4a09-980f-49cb92ae48d1",
-  "activeVersionId": "7a4ce199-c7c4-4a09-980f-49cb92ae48d1",
+  "versionId": "7f2c944c-0632-403a-a14b-06bbc39e87d4",
+  "activeVersionId": "a9da8308-e034-4b62-b152-57dc8e28676b",
   "triggerCount": 1,
   "shared": [
     {
@@ -3276,9 +3279,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-06-08T13:00:54.466Z",
-    "createdAt": "2026-06-08T13:00:52.718Z",
-    "versionId": "7a4ce199-c7c4-4a09-980f-49cb92ae48d1",
+    "updatedAt": "2026-06-11T02:37:24.349Z",
+    "createdAt": "2026-06-11T02:37:20.805Z",
+    "versionId": "a9da8308-e034-4b62-b152-57dc8e28676b",
     "workflowId": "lfu49lvSJTjUuhZN",
     "nodes": [
       {
@@ -4104,7 +4107,7 @@
       {
         "parameters": {
           "operation": "executeQuery",
-          "query": "INSERT INTO n8n_chat_histories (session_id, message) VALUES ('{{ $('DATA').item.json.unique_id }}', '{{ JSON.stringify({ type: 'ai', content: '[' + $('DATA').item.json.message.source_type.toUpperCase() + '] ' + $('MensagemConsolidada').item.json.mensagem, tool_calls: [], additional_kwargs: {}, response_metadata: {}, invalid_tool_calls: [] }) }}')",
+          "query": "INSERT INTO system_chat_histories (session_id, message) VALUES ('{{ $('DATA').item.json.unique_id }}', '{{ JSON.stringify({ type: 'ai', content: '[' + $('DATA').item.json.message.source_type.toUpperCase() + '] ' + $('MensagemConsolidada').item.json.mensagem, tool_calls: [], additional_kwargs: {}, response_metadata: {}, invalid_tool_calls: [] }).replace(/'/g, \"''\") }}')",
           "options": {}
         },
         "type": "n8n-nodes-base.postgres",
@@ -4184,7 +4187,7 @@
       {
         "parameters": {
           "operation": "executeQuery",
-          "query": "INSERT INTO n8n_chat_histories (session_id, message) VALUES ('{{ $('DATA').item.json.unique_id }}', '{{ JSON.stringify({ type: 'ai', content: 'CONTEXTO: ' + $('MensagemConsolidada').item.json.mensagem, tool_calls: [], additional_kwargs: {}, response_metadata: {}, invalid_tool_calls: [] }) }}')",
+          "query": "INSERT INTO system_chat_histories (session_id, message) VALUES ('{{ $('DATA').item.json.unique_id }}', '{{ JSON.stringify({ type: 'ai', content: 'CONTEXTO: ' + $('MensagemConsolidada').item.json.mensagem, tool_calls: [], additional_kwargs: {}, response_metadata: {}, invalid_tool_calls: [] }).replace(/'/g, \"''\") }}')",
           "options": {}
         },
         "type": "n8n-nodes-base.postgres",
@@ -4218,7 +4221,7 @@
       {
         "parameters": {
           "operation": "executeQuery",
-          "query": "INSERT INTO n8n_chat_histories (session_id, message) VALUES ('{{ $('DATA').item.json.unique_id }}', '{{ JSON.stringify({ type: 'human', content: '[CLIENTE DURANTE ATENDIMENTO] ' + $('MensagemConsolidada').item.json.mensagem, tool_calls: [], additional_kwargs: {}, response_metadata: {}, invalid_tool_calls: [] }) }}')",
+          "query": "INSERT INTO system_chat_histories (session_id, message) VALUES ('{{ $('DATA').item.json.unique_id }}', '{{ JSON.stringify({ type: 'human', content: '[CLIENTE DURANTE ATENDIMENTO] ' + $('MensagemConsolidada').item.json.mensagem, tool_calls: [], additional_kwargs: {}, response_metadata: {}, invalid_tool_calls: [] }).replace(/'/g, \"''\") }}')",
           "options": {}
         },
         "type": "n8n-nodes-base.postgres",
@@ -4255,7 +4258,7 @@
       {
         "parameters": {
           "operation": "set",
-          "key": "={{ String($('DATA').item.json.conversation.id) }}",
+          "key": "=lastmsg-{{ $('DATA').item.json.unique_id }}",
           "value": "={{ $json.currentDate }}",
           "keyType": "string",
           "expire": true,
@@ -4281,7 +4284,7 @@
         "parameters": {
           "operation": "get",
           "propertyName": "messageUser",
-          "key": "=inputMessage-{{ $('DATA').item.json.conversation.id }}",
+          "key": "=inputMessage-{{ $('DATA').item.json.unique_id }}",
           "keyType": "string",
           "options": {}
         },
@@ -4304,7 +4307,7 @@
       {
         "parameters": {
           "operation": "set",
-          "key": "=inputMessage-{{ $('DATA').item.json.conversation.id }}",
+          "key": "=inputMessage-{{ $('DATA').item.json.unique_id }}",
           "value": "={{ ($json.messageUser || '') + ($json.messageUser ? '\\n' : '') + $('MensagemConsolidada').item.json.mensagem }}",
           "keyType": "string",
           "expire": true,
@@ -4441,7 +4444,7 @@
         "parameters": {
           "operation": "get",
           "propertyName": "currentDate",
-          "key": "={{ String($('DATA').item.json.conversation.id) }}",
+          "key": "=lastmsg-{{ $('DATA').item.json.unique_id }}",
           "keyType": "string",
           "options": {}
         },
@@ -4498,7 +4501,7 @@
       {
         "parameters": {
           "operation": "delete",
-          "key": "=inputMessage-{{ $('DATA').item.json.conversation.id }}"
+          "key": "=inputMessage-{{ $('DATA').item.json.unique_id }}"
         },
         "type": "n8n-nodes-base.redis",
         "typeVersion": 1,
@@ -6304,7 +6307,7 @@
       }
     },
     "authors": "System AI SIM",
-    "name": "Version 7a4ce199",
+    "name": "Version a9da8308",
     "description": "",
     "autosaved": true
   },
