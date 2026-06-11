@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-10T12:33:46.957Z",
+  "updatedAt": "2026-06-10T20:44:31.831Z",
   "createdAt": "2026-05-05T09:04:42.217Z",
   "id": "t7kNyEMZWB45vnWc",
   "name": "[ TOOL ] Foto · Send · KLeilões",
@@ -313,7 +313,9 @@
     "executionOrder": "v1",
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false,
-    "binaryMode": "separate"
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "TaLOAW8gj0JIGTwW"
   },
   "staticData": null,
   "meta": null,
