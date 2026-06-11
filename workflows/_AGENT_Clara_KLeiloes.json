@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-10T12:48:31.362Z",
+  "updatedAt": "2026-06-10T20:44:03.656Z",
   "createdAt": "2026-05-02T20:04:10.025Z",
   "id": "MvWJhFxB79WElDHy",
   "name": "[ AGENT ] Clara · KLeilões",
@@ -1082,7 +1082,9 @@
     "executionOrder": "v1",
     "binaryMode": "separate",
     "availableInMCP": false,
-    "callerPolicy": "workflowsFromSameOwner"
+    "callerPolicy": "workflowsFromSameOwner",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "TaLOAW8gj0JIGTwW"
   },
   "staticData": null,
   "meta": {
