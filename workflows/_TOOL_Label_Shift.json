@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-10T12:35:57.186Z",
+  "updatedAt": "2026-06-10T20:38:20.568Z",
   "createdAt": "2026-05-01T04:40:29.526Z",
   "id": "HdVNCC1cfb4aBZ6q",
   "name": "[ TOOL ] Label · Shift",
@@ -310,7 +310,10 @@
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
-    "availableInMCP": false
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "TaLOAW8gj0JIGTwW",
+    "callerPolicy": "workflowsFromSameOwner"
   },
   "staticData": null,
   "meta": {
