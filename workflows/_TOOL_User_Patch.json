@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-10T12:34:59.524Z",
+  "updatedAt": "2026-06-11T02:56:54.710Z",
   "createdAt": "2026-05-01T04:16:51.080Z",
   "id": "zMsMhISi9aERdVcf",
   "name": "[ TOOL ] User · Patch",
@@ -19,28 +19,30 @@
           ]
         }
       },
-      "id": "91b3ff0e-0d46-4335-b68c-e23868cfa341",
+      "id": "fd5a645e-6a6e-41ff-b3d5-ec887660c5c7",
       "name": "Trigger",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        352,
-        640
+        640,
+        688
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT patch_user(\n  '{{ $json.unique_id }}',\n  '{{ $json.data }}'::jsonb\n)",
-        "options": {}
+        "query": "SELECT patch_user($1, $2::jsonb)",
+        "options": {
+          "queryReplacement": "={{ $json.unique_id }}, {{ $json.data }}"
+        }
       },
-      "id": "6b6265bc-59dd-45b0-b5e4-ecb4b29de0b3",
+      "id": "0b53673b-d481-4505-8055-3dc2b1290918",
       "name": "PATCH_USER",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        576,
-        640
+        864,
+        688
       ],
       "credentials": {
         "postgres": {
@@ -64,13 +66,13 @@
         },
         "options": {}
       },
-      "id": "9289333f-fd37-4ee9-be6b-193330487baa",
+      "id": "6e879584-e90e-421d-9194-06c8db2c2bb9",
       "name": "SET_RESPONSE",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        800,
-        640
+        1088,
+        688
       ]
     }
   ],
@@ -101,7 +103,10 @@
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
-    "availableInMCP": false
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "TaLOAW8gj0JIGTwW",
+    "callerPolicy": "workflowsFromSameOwner"
   },
   "staticData": null,
   "meta": {
@@ -117,8 +122,8 @@
       }
     ]
   },
-  "versionId": "ad1a29c8-c6df-4b52-ae53-9dce747c5fcd",
-  "activeVersionId": "ad1a29c8-c6df-4b52-ae53-9dce747c5fcd",
+  "versionId": "565e66d7-7dbe-4e55-8c7d-ff0929fbb899",
+  "activeVersionId": "565e66d7-7dbe-4e55-8c7d-ff0929fbb899",
   "triggerCount": 0,
   "shared": [
     {
@@ -130,9 +135,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-05-08T02:59:09.657Z",
-    "createdAt": "2026-05-08T02:59:06.890Z",
-    "versionId": "ad1a29c8-c6df-4b52-ae53-9dce747c5fcd",
+    "updatedAt": "2026-06-11T02:57:06.438Z",
+    "createdAt": "2026-06-11T02:56:54.712Z",
+    "versionId": "565e66d7-7dbe-4e55-8c7d-ff0929fbb899",
     "workflowId": "zMsMhISi9aERdVcf",
     "nodes": [
       {
@@ -148,28 +153,30 @@
             ]
           }
         },
-        "id": "91b3ff0e-0d46-4335-b68c-e23868cfa341",
+        "id": "fd5a645e-6a6e-41ff-b3d5-ec887660c5c7",
         "name": "Trigger",
         "type": "n8n-nodes-base.executeWorkflowTrigger",
         "typeVersion": 1.1,
         "position": [
-          352,
-          640
+          640,
+          688
         ]
       },
       {
         "parameters": {
           "operation": "executeQuery",
-          "query": "SELECT patch_user(\n  '{{ $json.unique_id }}',\n  '{{ $json.data }}'::jsonb\n)",
-          "options": {}
+          "query": "SELECT patch_user($1, $2::jsonb)",
+          "options": {
+            "queryReplacement": "={{ $json.unique_id }}, {{ $json.data }}"
+          }
         },
-        "id": "6b6265bc-59dd-45b0-b5e4-ecb4b29de0b3",
+        "id": "0b53673b-d481-4505-8055-3dc2b1290918",
         "name": "PATCH_USER",
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.6,
         "position": [
-          576,
-          640
+          864,
+          688
         ],
         "credentials": {
           "postgres": {
@@ -193,13 +200,13 @@
           },
           "options": {}
         },
-        "id": "9289333f-fd37-4ee9-be6b-193330487baa",
+        "id": "6e879584-e90e-421d-9194-06c8db2c2bb9",
         "name": "SET_RESPONSE",
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          800,
-          640
+          1088,
+          688
         ]
       }
     ],
@@ -228,7 +235,7 @@
       }
     },
     "authors": "System AI SIM",
-    "name": "Version ad1a29c8",
+    "name": "Version 565e66d7",
     "description": "",
     "autosaved": true
   },
