@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-10T12:33:08.237Z",
+  "updatedAt": "2026-06-10T20:43:27.292Z",
   "createdAt": "2026-05-05T09:21:52.086Z",
   "id": "ANzKK04u0KysV2rc",
   "name": "[ TOOL ] Lote · Detail · KLeilões",
@@ -128,7 +128,7 @@
       "id": "gemini-1",
       "name": "Gemini_Edital",
       "position": [
-        720,
+        672,
         0
       ],
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
@@ -138,7 +138,8 @@
           "id": "ZOE7x3ra7YBLPW6Q",
           "name": "SYSTEM - CORE"
         }
-      }
+      },
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -147,8 +148,8 @@
       "id": "code-1",
       "name": "Preparar_Envio",
       "position": [
-        960,
-        0
+        896,
+        240
       ],
       "type": "n8n-nodes-base.code",
       "typeVersion": 2
@@ -160,8 +161,8 @@
       "id": "wait-1",
       "name": "Wait",
       "position": [
-        1200,
-        0
+        240,
+        528
       ],
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
@@ -205,8 +206,8 @@
       "id": "http-send",
       "name": "Enviar_PDF",
       "position": [
-        1440,
-        0
+        448,
+        528
       ],
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2
@@ -240,11 +241,76 @@
       "id": "set-2",
       "name": "SET_RESPONSE",
       "position": [
-        1680,
-        0
+        640,
+        528
       ],
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'gpt-4o', messages: [ { role: 'user', content: [ { type: 'file', file: { filename: 'documento.pdf', file_data: 'data:application/pdf;base64,' + $json.data } }, { type: 'text', text: `Você é um analista especializado em editais de leilão judicial e extrajudicial brasileiros.\\n\\nAnalise o edital em PDF e retorne SOMENTE no formato abaixo — sem saudações, sem introduções, sem perguntas finais. Use formatação WhatsApp (*negrito* para valores, datas e dados importantes, ▸ como marcador).\\n\\n` + ($('Extrair_Validar').item.json.user_intention ? `Intenção do lead: ` + $('Extrair_Validar').item.json.user_intention + `\\nPriorize essa informação no topo antes do resumo.\\n\\n` : ``) + `*[NOME DO BEM]* — descreva em uma linha com as características mais relevantes.\\n\\n*Leilão*\\n▸ 1ª Praça: [data · hora] — *R$ [valor]*\\n▸ 2ª Praça: [data · hora] — *R$ [valor]*\\n▸ Modalidade: Online / Presencial\\n\\n*Pagamento*\\n[Comissão do leiloeiro, prazo, parcelamento — só o que constar]\\n\\n*Situação jurídica*\\n[Ônus, hipoteca, dívidas, ocupação — omita se não houver nada relevante]\\n\\n*Processo*\\n[Número · Vara · Comarca — só se for judicial]\\n\\n*Localização*\\n[Endereço completo — para imóveis]\\n\\nREGRAS CRÍTICAS:\\n— Comece sempre com o nome do bem, nunca com saudação\\n— Se a informação não constar no edital, omita a seção inteira — jamais invente\\n— Máximo 2 linhas por seção, exceto Situação jurídica que pode ter 3\\n— Sem emojis, sem markdown, sem barras de escape\\n— Para veículos: priorize placa, chassi, ano, estado de conservação\\n— Para imóveis: priorize matrícula, endereço, metragem, ônus\\n— Para rurais: priorize área em hectares, município, CAR/INCRA se houver` } ] } ] }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        256
+      ],
+      "id": "f2cc13e9-eb80-45d6-85c5-3918ccb8f549",
+      "name": "HTTP_OpenAI_PDF",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "credentials": {
+        "openAiApi": {
+          "id": "0kAQNkLmjarAHH8S",
+          "name": "Open - AI"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "notes": "🔁 FALLBACK PDF — Chat Completions com file_data base64 (texto + imagens das páginas)"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url_edital }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "77897664-47bb-49c6-b219-09fb7a17ac36",
+      "name": "Download_PDF1",
+      "position": [
+        240,
+        256
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        256
+      ],
+      "id": "4d149fbd-a99a-470a-b596-8dcefe54b63f",
+      "name": "Extract from File"
     }
   ],
   "connections": {
@@ -283,9 +349,10 @@
     },
     "Gemini_Edital": {
       "main": [
+        [],
         [
           {
-            "node": "Preparar_Envio",
+            "node": "Download_PDF1",
             "type": "main",
             "index": 0
           }
@@ -324,13 +391,48 @@
           }
         ]
       ]
+    },
+    "HTTP_OpenAI_PDF": {
+      "main": [
+        [
+          {
+            "node": "Preparar_Envio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download_PDF1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "HTTP_OpenAI_PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
     "executionOrder": "v1",
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false,
-    "binaryMode": "separate"
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "TaLOAW8gj0JIGTwW"
   },
   "staticData": null,
   "meta": null,
@@ -457,8 +559,8 @@
       }
     ]
   },
-  "versionId": "838ff726-0387-4944-84fb-551f859ddd41",
-  "activeVersionId": "838ff726-0387-4944-84fb-551f859ddd41",
+  "versionId": "eca70849-e5b2-415a-8376-f5e64d59a979",
+  "activeVersionId": "eca70849-e5b2-415a-8376-f5e64d59a979",
   "triggerCount": 0,
   "shared": [
     {
@@ -470,9 +572,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-06-09T15:42:10.523Z",
-    "createdAt": "2026-06-09T15:42:09.192Z",
-    "versionId": "838ff726-0387-4944-84fb-551f859ddd41",
+    "updatedAt": "2026-06-10T19:00:47.179Z",
+    "createdAt": "2026-06-10T19:00:43.837Z",
+    "versionId": "eca70849-e5b2-415a-8376-f5e64d59a979",
     "workflowId": "ANzKK04u0KysV2rc",
     "nodes": [
       {
@@ -597,7 +699,7 @@
         "id": "gemini-1",
         "name": "Gemini_Edital",
         "position": [
-          720,
+          672,
           0
         ],
         "type": "@n8n/n8n-nodes-langchain.googleGemini",
@@ -607,7 +709,8 @@
             "id": "ZOE7x3ra7YBLPW6Q",
             "name": "SYSTEM - CORE"
           }
-        }
+        },
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -616,8 +719,8 @@
         "id": "code-1",
         "name": "Preparar_Envio",
         "position": [
-          960,
-          0
+          896,
+          240
         ],
         "type": "n8n-nodes-base.code",
         "typeVersion": 2
@@ -629,8 +732,8 @@
         "id": "wait-1",
         "name": "Wait",
         "position": [
-          1200,
-          0
+          240,
+          528
         ],
         "type": "n8n-nodes-base.wait",
         "typeVersion": 1.1,
@@ -674,8 +777,8 @@
         "id": "http-send",
         "name": "Enviar_PDF",
         "position": [
-          1440,
-          0
+          448,
+          528
         ],
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2
@@ -709,11 +812,76 @@
         "id": "set-2",
         "name": "SET_RESPONSE",
         "position": [
-          1680,
-          0
+          640,
+          528
         ],
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/chat/completions",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ model: 'gpt-4o', messages: [ { role: 'user', content: [ { type: 'file', file: { filename: 'documento.pdf', file_data: 'data:application/pdf;base64,' + $json.data } }, { type: 'text', text: `Você é um analista especializado em editais de leilão judicial e extrajudicial brasileiros.\\n\\nAnalise o edital em PDF e retorne SOMENTE no formato abaixo — sem saudações, sem introduções, sem perguntas finais. Use formatação WhatsApp (*negrito* para valores, datas e dados importantes, ▸ como marcador).\\n\\n` + ($('Extrair_Validar').item.json.user_intention ? `Intenção do lead: ` + $('Extrair_Validar').item.json.user_intention + `\\nPriorize essa informação no topo antes do resumo.\\n\\n` : ``) + `*[NOME DO BEM]* — descreva em uma linha com as características mais relevantes.\\n\\n*Leilão*\\n▸ 1ª Praça: [data · hora] — *R$ [valor]*\\n▸ 2ª Praça: [data · hora] — *R$ [valor]*\\n▸ Modalidade: Online / Presencial\\n\\n*Pagamento*\\n[Comissão do leiloeiro, prazo, parcelamento — só o que constar]\\n\\n*Situação jurídica*\\n[Ônus, hipoteca, dívidas, ocupação — omita se não houver nada relevante]\\n\\n*Processo*\\n[Número · Vara · Comarca — só se for judicial]\\n\\n*Localização*\\n[Endereço completo — para imóveis]\\n\\nREGRAS CRÍTICAS:\\n— Comece sempre com o nome do bem, nunca com saudação\\n— Se a informação não constar no edital, omita a seção inteira — jamais invente\\n— Máximo 2 linhas por seção, exceto Situação jurídica que pode ter 3\\n— Sem emojis, sem markdown, sem barras de escape\\n— Para veículos: priorize placa, chassi, ano, estado de conservação\\n— Para imóveis: priorize matrícula, endereço, metragem, ônus\\n— Para rurais: priorize área em hectares, município, CAR/INCRA se houver` } ] } ] }) }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          640,
+          256
+        ],
+        "id": "f2cc13e9-eb80-45d6-85c5-3918ccb8f549",
+        "name": "HTTP_OpenAI_PDF",
+        "retryOnFail": true,
+        "maxTries": 2,
+        "credentials": {
+          "openAiApi": {
+            "id": "0kAQNkLmjarAHH8S",
+            "name": "Open - AI"
+          }
+        },
+        "onError": "continueErrorOutput",
+        "notes": "🔁 FALLBACK PDF — Chat Completions com file_data base64 (texto + imagens das páginas)"
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.url_edital }}",
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "file"
+              }
+            },
+            "timeout": 30000
+          }
+        },
+        "id": "77897664-47bb-49c6-b219-09fb7a17ac36",
+        "name": "Download_PDF1",
+        "position": [
+          240,
+          256
+        ],
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2
+      },
+      {
+        "parameters": {
+          "operation": "binaryToPropery",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1.1,
+        "position": [
+          448,
+          256
+        ],
+        "id": "4d149fbd-a99a-470a-b596-8dcefe54b63f",
+        "name": "Extract from File"
       }
     ],
     "connections": {
@@ -752,9 +920,10 @@
       },
       "Gemini_Edital": {
         "main": [
+          [],
           [
             {
-              "node": "Preparar_Envio",
+              "node": "Download_PDF1",
               "type": "main",
               "index": 0
             }
@@ -793,12 +962,45 @@
             }
           ]
         ]
+      },
+      "HTTP_OpenAI_PDF": {
+        "main": [
+          [
+            {
+              "node": "Preparar_Envio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Download_PDF1": {
+        "main": [
+          [
+            {
+              "node": "Extract from File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File": {
+        "main": [
+          [
+            {
+              "node": "HTTP_OpenAI_PDF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "System AI SIM",
-    "name": "Version 838ff726",
+    "name": "Version eca70849",
     "description": "",
-    "autosaved": false
+    "autosaved": true
   },
   "tags": [
     {
