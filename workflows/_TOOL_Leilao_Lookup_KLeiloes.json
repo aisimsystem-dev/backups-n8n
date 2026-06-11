@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-10T12:34:28.619Z",
+  "updatedAt": "2026-06-10T20:44:19.034Z",
   "createdAt": "2026-05-05T08:32:39.377Z",
   "id": "RLum2oNmKSWOPZAi",
   "name": "[ TOOL ] Leilão · Lookup · KLeilões",
@@ -114,7 +114,9 @@
     "executionOrder": "v1",
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false,
-    "binaryMode": "separate"
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "TaLOAW8gj0JIGTwW"
   },
   "staticData": null,
   "meta": null,
