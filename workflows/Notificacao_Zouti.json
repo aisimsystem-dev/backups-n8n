@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-10T20:46:16.244Z",
+  "updatedAt": "2026-06-11T13:49:37.135Z",
   "createdAt": "2026-05-18T13:08:01.275Z",
   "id": "b5ifbBkBjfJ24cT0",
   "name": "Notificação_Zouti",
@@ -15,10 +15,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -1072,
-        144
+        -704,
+        272
       ],
-      "id": "6a031cbc-53f1-4c8b-b67b-452e36593430",
+      "id": "ff3b9b99-e5dd-4a08-b72a-a95ff56a43a9",
       "name": "Webhook",
       "webhookId": "404831a6-fb41-46cd-8399-610cd5c97b46"
     },
@@ -143,10 +143,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        -864,
-        96
+        -496,
+        224
       ],
-      "id": "50c1bcd9-1fa2-4e08-ada0-d0b110a1391d",
+      "id": "02a68c67-fc6e-4d5a-b27b-e2646b56188d",
       "name": "Switch"
     },
     {
@@ -176,10 +176,10 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        -368,
-        -128
+        0,
+        0
       ],
-      "id": "b2b31b4a-33b8-438e-b6f0-4d293483592f",
+      "id": "65784b32-f0dc-4a57-ac06-0410882c01c1",
       "name": "Filter_Status"
     },
     {
@@ -199,10 +199,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -96,
-        -128
+        272,
+        0
       ],
-      "id": "eba077ae-9286-4533-8819-cd51dcfcc277",
+      "id": "a50d6889-3131-4b96-b204-48d7349a9313",
       "name": "Set_UniqueID"
     },
     {
@@ -214,10 +214,10 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        176,
-        -128
+        544,
+        0
       ],
-      "id": "1c699480-bd7c-48ad-bbec-6dc497a7f350",
+      "id": "0efaa601-ee04-4d4b-abd5-71a20e600196",
       "name": "Get_User",
       "credentials": {
         "postgres": {
@@ -233,10 +233,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        432,
-        -128
+        800,
+        0
       ],
-      "id": "440624c0-938a-4f55-a9a3-3e1cefcac599",
+      "id": "397a3824-db4d-4d4f-a106-ae66c101995b",
       "name": "Extract_Data"
     },
     {
@@ -333,10 +333,10 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        672,
-        -128
+        1040,
+        0
       ],
-      "id": "67c63fc3-d1ea-4c19-9956-c0b1f17dfd06",
+      "id": "2c077543-754b-4466-b410-b1f02708c573",
       "name": "Criar_Evento_Calendar"
     },
     {
@@ -348,10 +348,10 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        944,
-        -128
+        1312,
+        0
       ],
-      "id": "f03c761f-4cca-4202-93bb-0755642b0746",
+      "id": "b0574460-9046-437f-932a-8fbba94a49a2",
       "name": "Update_User",
       "credentials": {
         "postgres": {
@@ -369,10 +369,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1200,
-        -128
+        1568,
+        0
       ],
-      "id": "13a3c7cf-da11-4ce4-9951-d81f37a70a29",
+      "id": "672b1f61-999e-48d8-a593-6b5f572f3ba6",
       "name": "Edit Fields"
     },
     {
@@ -406,10 +406,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1456,
-        -128
+        1824,
+        0
       ],
-      "id": "d6f94058-4fc1-4f8c-8355-6302fa80b954",
+      "id": "0f2ae43c-6d34-4d67-ab76-41176d24b95b",
       "name": "Enviar_Confirmacao"
     },
     {
@@ -439,10 +439,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1712,
-        -128
+        2080,
+        0
       ],
-      "id": "decb22e6-53a6-4cbf-8c68-469c7d70f3e5",
+      "id": "754fadb9-c59a-4c34-a241-a34313bae190",
       "name": "Add_Label_Agendada"
     },
     {
@@ -472,10 +472,10 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        -368,
-        144
+        0,
+        272
       ],
-      "id": "f1f12dfa-99e0-42b1-b6e0-f1fb501e36ac",
+      "id": "fb3a99aa-5ed8-43d7-8fa5-cf5357f6992b",
       "name": "Filter_Status_Plano"
     },
     {
@@ -501,25 +501,25 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -96,
-        144
+        272,
+        272
       ],
-      "id": "aedcb957-2cc8-4d52-9a5e-8680ed1ad66d",
+      "id": "75f2242d-31af-4f06-a2f8-00c8b4d36d1f",
       "name": "Set_UniqueID_Plano"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT user_id, usage, actual_stage, account, inbox, conversation, contact FROM users WHERE user_id = '{{ $json.unique_id }}'",
+        "query": "SELECT user_id, subscription, actual_stage, account, inbox, conversation, contact FROM users WHERE user_id = '{{ $json.unique_id }}'",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        176,
-        144
+        544,
+        272
       ],
-      "id": "681843db-677e-4974-bb00-1c736e09eff1",
+      "id": "9b729d5b-9869-4a4c-ad85-10eaf6709893",
       "name": "Get_User_Plano",
       "credentials": {
         "postgres": {
@@ -535,10 +535,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        432,
-        144
+        800,
+        272
       ],
-      "id": "77b12bea-a701-45bd-b861-de19df3c0a92",
+      "id": "ca71d861-92e2-43c8-b423-d5fb6f524e96",
       "name": "Extract_Data_Plano"
     },
     {
@@ -568,25 +568,25 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        672,
-        144
+        1040,
+        272
       ],
-      "id": "aae59c4f-fed2-4063-a051-0d71ba9cf360",
+      "id": "8744e500-c3ad-48d7-b0ed-2735de3a37ac",
       "name": "IF_Tipo_Plano"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE users\nSET\n  usage = usage || jsonb_build_object(\n    'plan_type', 'pago',\n    'monthly_usage', 0,\n    'usage_limit', 1000,\n    'plan_start', NOW()::text,\n    'plan_expires', (NOW() + INTERVAL '30 days')::text\n  ),\n  actual_stage = 2,\n  email = '{{ $('Webhook').item.json.body.customer.email }}',\n  updated_at = NOW()\nWHERE user_id = '{{ $json.unique_id }}'\nRETURNING user_id",
+        "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_type',   'mensal',\n    'daily_limit', 99999,\n    'plan_start',  NOW()::text,\n    'plan_expires',(NOW() + INTERVAL '30 days')::text\n  ),\n  actual_stage = 2,\n  email = '{{ $('Webhook').item.json.body.customer.email }}',\n  updated_at = NOW()\nWHERE user_id = '{{ $json.unique_id }}'\nRETURNING user_id",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        944,
-        128
+        1312,
+        256
       ],
-      "id": "20f5e1f0-b600-4a41-99c2-a112001477c6",
+      "id": "642e4757-6659-4a9d-9d1f-cefda7ee0788",
       "name": "Activate_Mensal",
       "credentials": {
         "postgres": {
@@ -598,16 +598,16 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE users\nSET\n  usage = usage || jsonb_build_object(\n    'plan_type', 'pago',\n    'monthly_usage', 0,\n    'usage_limit', 1000,\n    'plan_start', NOW()::text,\n    'plan_expires', (NOW() + INTERVAL '365 days')::text\n  ),\n  actual_stage = 2,\n  email = '{{ $('Webhook').item.json.body.customer.email }}',\n  updated_at = NOW()\nWHERE user_id = '{{ $json.unique_id }}'\nRETURNING user_id",
+        "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_type',   'anual',\n    'daily_limit', 99999,\n    'plan_start',  NOW()::text,\n    'plan_expires',(NOW() + INTERVAL '365 days')::text\n  ),\n  actual_stage = 2,\n  email = '{{ $('Webhook').item.json.body.customer.email }}',\n  updated_at = NOW()\nWHERE user_id = '{{ $json.unique_id }}'\nRETURNING user_id",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        944,
-        368
+        1312,
+        496
       ],
-      "id": "02926e26-3f49-448d-b8bc-da5d450d4d42",
+      "id": "7fcc8663-1c68-495b-af91-d7f34b811e7b",
       "name": "Activate_Anual",
       "credentials": {
         "postgres": {
@@ -634,7 +634,7 @@
           "parameters": [
             {
               "name": "content",
-              "value": "Que bom ter você aqui! 💛\nSeu plano mensal está ativo e você já tem acesso ilimitado ao Aline Cuida.\nPode continuar me chamando quando precisar — estou aqui 24h para te ajudar no cuidado com seu filho(a)"
+              "value": "Tudo certo! ✅\n\nSeu plano *Premium Mensal* está ativo agora.\n\nA partir deste momento você tem acesso ilimitado à Aline Cuida — sem limite de mensagens.\n\nPode continuar a conversa normalmente! 😊"
             },
             {
               "name": "message_type",
@@ -647,10 +647,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1200,
-        128
+        1568,
+        256
       ],
-      "id": "1a98a94b-0c12-4cc2-b278-086445494f90",
+      "id": "95651de1-e1e8-4c65-b3c5-23939c5f3e1d",
       "name": "Enviar_Confirmacao_Mensal"
     },
     {
@@ -671,7 +671,7 @@
           "parameters": [
             {
               "name": "content",
-              "value": "=Que bom ter você aqui por mais tempo! 💛 Seu plano anual está ativo e você já tem acesso ilimitado ao Aline Cuida pelo próximo ano. Pode continuar me chamando quando precisar — estou aqui 24h para te ajudar no cuidado com seu filho(a)."
+              "value": "Tudo certo! ✅\n\nSeu plano *Premium Anual* está ativo agora.\n\nA partir deste momento você tem acesso ilimitado à Aline Cuida — sem limite de mensagens pelo próximo ano.\n\nPode continuar a conversa normalmente! 😊"
             },
             {
               "name": "message_type",
@@ -684,10 +684,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1200,
-        368
+        1568,
+        496
       ],
-      "id": "3897f99d-a60f-4b86-93e6-9991852e3fd3",
+      "id": "f6031aa4-cb6e-4945-817d-2ba9e47c801d",
       "name": "Enviar_Confirmacao_Anual"
     },
     {
@@ -713,25 +713,25 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -368,
-        400
+        0,
+        528
       ],
-      "id": "7588a245-4157-467e-916c-49606f310127",
+      "id": "e7f59112-c67b-4efd-9ace-fd1ce0419cef",
       "name": "Set_UniqueID_Renewal"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT user_id, account, inbox, conversation, contact\nFROM users\nWHERE user_id = '{{ $json.unique_id }}'",
+        "query": "SELECT user_id, account, inbox, conversation FROM users WHERE user_id = '{{ $json.unique_id }}'",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -96,
-        400
+        272,
+        528
       ],
-      "id": "f68e0574-8261-4525-a307-e6d9b3aee184",
+      "id": "4ab4e8e9-e06b-4c51-8e00-dc4249782ed9",
       "name": "Get_User_Renewal",
       "credentials": {
         "postgres": {
@@ -743,16 +743,16 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE users\nSET\n  usage = usage || jsonb_build_object(\n    'monthly_usage', 0,\n    'plan_expires', CASE\n      WHEN '{{ $('Set_UniqueID_Renewal').item.json.plan_interval }}' = 'YEARLY'\n      THEN (NOW() + INTERVAL '365 days')::text\n      ELSE (NOW() + INTERVAL '30 days')::text\n    END\n  ),\n  updated_at = NOW()\nWHERE user_id = '{{ $json.user_id }}'\nRETURNING user_id",
+        "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_expires', CASE\n      WHEN '{{ $('Set_UniqueID_Renewal').item.json.plan_interval }}' = 'YEARLY'\n      THEN (NOW() + INTERVAL '365 days')::text\n      ELSE (NOW() + INTERVAL '30 days')::text\n    END\n  ),\n  updated_at = NOW()\nWHERE user_id = '{{ $json.user_id }}'\nRETURNING user_id",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        176,
-        400
+        544,
+        528
       ],
-      "id": "21168e37-73f1-44de-8663-412e38e32d9a",
+      "id": "3850080e-000e-4d00-b52a-5cd7fc1fc955",
       "name": "Update_Renewal",
       "credentials": {
         "postgres": {
@@ -778,10 +778,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -368,
-        672
+        0,
+        800
       ],
-      "id": "4e7bcc09-dce7-4f9a-bca9-29a23ffe8f66",
+      "id": "1d61a3b8-258b-43fe-bf84-8382f7bfc9b0",
       "name": "Set_UniqueID_Cancel"
     },
     {
@@ -793,10 +793,10 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -96,
-        672
+        272,
+        800
       ],
-      "id": "44ef0baf-3187-4ae7-ac2e-90cacf44780d",
+      "id": "a8e7badd-cb6a-4523-a0ac-0fee4b7cab04",
       "name": "Get_User_Cancel",
       "credentials": {
         "postgres": {
@@ -808,16 +808,16 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE users\nSET\n  usage = usage || jsonb_build_object(\n    'plan_type', 'gratuito',\n    'usage_limit', 50,\n    'plan_expires', NOW()::text\n  ),\n  updated_at = NOW()\nWHERE user_id = '{{ $json.user_id }}'\nRETURNING user_id",
+        "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_type',   'gratuito',\n    'daily_limit', 8,\n    'plan_expires', NOW()::text\n  ),\n  updated_at = NOW()\nWHERE user_id = '{{ $json.user_id }}'\nRETURNING user_id",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        176,
-        672
+        544,
+        800
       ],
-      "id": "3856fdb3-ce05-4ce5-9652-51a1a451b4e8",
+      "id": "8b7be07c-36f5-40cc-8cfe-3e44d3eb41fd",
       "name": "Update_Cancel",
       "credentials": {
         "postgres": {
@@ -844,7 +844,7 @@
           "parameters": [
             {
               "name": "content",
-              "value": "=Tudo certo! 💛 Sua assinatura foi cancelada e você voltou ao plano gratuito — continua podendo me chamar dentro do limite diário. Se um dia precisar de acesso ilimitado de novo, é só me avisar!"
+              "value": "Sua assinatura Premium foi cancelada.\n\nVocê voltou ao plano gratuito, com limite de 50 mensagens por mês.\n\nSe quiser reativar o Premium a qualquer momento, é só me chamar! 😊"
             },
             {
               "name": "message_type",
@@ -857,10 +857,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        432,
-        672
+        800,
+        800
       ],
-      "id": "01ace3b9-8544-4d96-ac69-de220b0ed091",
+      "id": "68e6482a-c6d0-4005-9cd9-2bb89ef2c535",
       "name": "Enviar_Cancelamento"
     }
   ],
@@ -1162,92 +1162,111 @@
           "headers": {
             "host": "hook.aisim.cloud",
             "user-agent": "Zouti-Webhook/1.0",
-            "content-length": "1564",
+            "content-length": "1950",
+            "accept": "*/*",
             "accept-encoding": "gzip, br",
+            "accept-language": "*",
             "cdn-loop": "cloudflare; loops=1",
-            "cf-connecting-ip": "3.95.176.225",
+            "cf-connecting-ip": "54.226.157.75",
             "cf-ipcountry": "US",
-            "cf-ray": "a092088ffb7c88fc-IAD",
+            "cf-ray": "9f6959757d488acc-EWR",
             "cf-visitor": "{\"scheme\":\"https\"}",
             "content-type": "application/json",
-            "url": "https://hook.aisim.cloud/webhook/aline_pagamentos",
-            "x-forwarded-for": "3.95.176.225, 104.22.101.93",
+            "sec-fetch-mode": "cors",
+            "url": "https://hook.aisim.cloud/webhook/aline_zouti",
+            "x-forwarded-for": "54.226.157.75, 104.23.253.86",
             "x-forwarded-host": "hook.aisim.cloud",
             "x-forwarded-port": "443",
             "x-forwarded-proto": "https",
-            "x-forwarded-server": "d14c37b23d56",
-            "x-real-ip": "104.22.101.93",
-            "x-zouti-event-id": "evt_i6zmugw5hnt3ha5qak6kfp",
-            "x-zouti-event-type": "SUBSCRIPTION_CANCELED",
-            "x-zouti-object-id": "sub_qy3t196mxe2mvsmsbhtfkj",
-            "x-zouti-object-name": "Subscription",
-            "x-zouti-signature": "t=1781028001003,v1=f8a5dde80ece03e5c5637aee00a285f170ab5176e5a84d3fe432e8e6fe5d336d",
-            "x-zouti-webhook-delivery-id": "webd_49jqkby21hrod1urjdwhwrfvc2ud",
+            "x-forwarded-server": "c29b75a36b5c",
+            "x-real-ip": "104.23.253.86",
+            "x-zouti-event-id": "evt_txtpu5r1pr0ntkkiuw0eaz",
+            "x-zouti-event-type": "ORDER_PAID",
+            "x-zouti-object-id": "ord_yzfjy7jdop15qj8lbq21t4",
+            "x-zouti-object-name": "Order",
+            "x-zouti-signature": "t=1777917043642,v1=b9960a8431756d71d73ebb9dd0fecd81434e595deff1bb30fd047b3f811fce30",
+            "x-zouti-webhook-delivery-id": "webd_86zvrj5kgcy6q8g2mhfrrj9kcg5z",
             "x-zouti-webhook-id": "web_bvftvc5cb41n9p6g5f04er"
           },
           "params": {},
           "query": {},
           "body": {
-            "id": "sub_qy3t196mxe2mvsmsbhtfkj",
+            "id": "ord_yzfjy7jdop15qj8lbq21t4",
             "account_id": "acc_hw8mw6qaw7v39ic0dpvcus",
-            "order_id": "ord_yzfjy7jdop15qj8lbq21t4",
-            "status": "CANCELED",
-            "customer": {
-              "id": "cus_eko7caj46b0d9hmqzkdkhq",
-              "name": "Rhavi da Silva",
-              "email": "rhavilirio@gmail.com",
-              "document": "01702406652",
-              "phone": "5531999857100"
-            },
-            "plan": {
-              "id": "prod_offer_plan_yymbj48gx6dcuhqwq29ad0",
-              "name": "Aline Cuida Premium (Mensal)",
-              "amount": 3500,
-              "currency": "BRL",
-              "interval": "MONTHLY",
-              "trial": {
-                "enabled": false,
-                "days": 0
-              }
-            },
-            "payment_method": "PIX",
-            "current_period_start": "2026-05-04T17:50:22.975Z",
-            "current_period_end": "2026-06-04T03:00:00.000Z",
-            "next_payment_date": "2026-06-10T18:00:00.149Z",
-            "canceled_at": "2026-06-09T18:00:00.978Z",
-            "installments": 1,
-            "line_items": [
-              {
-                "name": "Aline Cuida Premium (Mensal)",
-                "description": "Aline Cuida Premium (Mensal)",
-                "type": "SKU",
-                "quantity": 1,
-                "product_id": "prod_59s6t74zvdqqq017bq2ci2",
-                "amount": 3500,
-                "full_amount": 3500,
-                "promotional_amount": 0,
-                "amount_in_brl": 35,
-                "full_amount_in_brl": 35,
-                "promotional_amount_in_brl": 0,
-                "image": "https://zouti-prod-core-media-public.s3.amazonaws.com/media/accounts/acc_hw8mw6qaw7v39ic0dpvcus/products/files/file_6zvd81t2retuae0z3yxjtr_253dbae0-8427-4ba9-9bc8-345ad54a10f0.png",
-                "is_member_area": false,
-                "product_offer_id": "prod_offer_47fam2f02cm5b191knsb8a",
-                "plan_id": "prod_offer_plan_yymbj48gx6dcuhqwq29ad0"
-              }
-            ],
-            "cancel_at_period_end": true,
-            "billing_cycle_count": 1,
+            "status": "PAID",
+            "customer_id": "cus_eko7caj46b0d9hmqzkdkhq",
+            "provider": "ZOUTI",
+            "order_session_id": "os_cor65h22du4prewe0n48j0",
+            "amount_subtotal": 3500,
+            "amount_subtotal_in_brl": 35,
+            "amount_total": 525,
+            "amount_total_in_brl": 5.25,
+            "paid_at": "2026-05-04T17:50:43.570Z",
             "tracking": {
               "product_offer_id": "prod_offer_47fam2f02cm5b191knsb8a",
               "src": "organic"
             },
+            "metadata": {
+              "checkout_type": "INFOPRODUCT"
+            },
+            "payment_type": "SUBSCRIPTION",
+            "product_offer_id": "prod_offer_47fam2f02cm5b191knsb8a",
+            "items": [
+              {
+                "amount": 3500,
+                "amount_in_brl": 35,
+                "description": "Aline Cuida Premium (Mensal)",
+                "image_url": "https://zouti-prod-core-media-public.s3.amazonaws.com/media/accounts/acc_hw8mw6qaw7v39ic0dpvcus/products/files/file_6zvd81t2retuae0z3yxjtr_253dbae0-8427-4ba9-9bc8-345ad54a10f0.png",
+                "name": "Aline Cuida Premium (Mensal)",
+                "full_amount": 3500,
+                "full_amount_in_brl": 35,
+                "product_id": "prod_59s6t74zvdqqq017bq2ci2",
+                "quantity": 1,
+                "type": "SKU",
+                "plan_id": "prod_offer_plan_yymbj48gx6dcuhqwq29ad0",
+                "product_offer_id": "prod_offer_47fam2f02cm5b191knsb8a"
+              }
+            ],
+            "customer": {
+              "document": "01702406652",
+              "email": "rhavilirio@gmail.com",
+              "name": "Rhavi da Silva",
+              "phone": "5531999857100"
+            },
+            "payment": {
+              "method": "PIX",
+              "status": "PAID",
+              "interest_amount": 0,
+              "interest_amount_in_brl": 0,
+              "amount": 525,
+              "amount_in_brl": 5.25,
+              "fee": 220,
+              "fee_in_brl": 2.2,
+              "discount_amount": 2975,
+              "discount_amount_in_brl": 29.75,
+              "interest_transfer_amount": 0,
+              "interest_transfer_amount_in_brl": 0,
+              "net_amount": 305,
+              "net_amount_in_brl": 3.05,
+              "installments": 1
+            },
             "utm_data": {
               "utm_content": "9-89-72"
             },
-            "created_at": "2026-05-04T17:50:22.978Z",
-            "updated_at": "2026-06-09T18:00:00.978Z"
+            "navigator": {
+              "ip_address": "201.80.54.181",
+              "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+              "referer": "",
+              "fbc": "",
+              "fbp": "fb.2.1775251773849.8807315816570349"
+            },
+            "created_at": "2026-05-04T17:50:21.818Z",
+            "updated_at": "2026-05-04T17:50:43.579Z",
+            "amount_in_brl": 5.25,
+            "currency": "BRL",
+            "is_split_payment": false
           },
-          "webhookUrl": "https://hook.aisim.cloud/webhook/aline_pagamentos",
+          "webhookUrl": "https://hook.aisim.cloud/webhook/aline_zouti",
           "executionMode": "production"
         },
         "pairedItem": {
@@ -1256,8 +1275,8 @@
       }
     ]
   },
-  "versionId": "64bd60fd-078f-4314-abf2-f4a13cc59aea",
-  "activeVersionId": "64bd60fd-078f-4314-abf2-f4a13cc59aea",
+  "versionId": "a251fd7b-edb4-4a77-8144-1575b076b2ea",
+  "activeVersionId": "a251fd7b-edb4-4a77-8144-1575b076b2ea",
   "triggerCount": 1,
   "shared": [
     {
@@ -1269,9 +1288,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-06-04T11:53:58.065Z",
-    "createdAt": "2026-06-04T11:53:55.142Z",
-    "versionId": "64bd60fd-078f-4314-abf2-f4a13cc59aea",
+    "updatedAt": "2026-06-11T13:49:40.595Z",
+    "createdAt": "2026-06-11T13:49:37.138Z",
+    "versionId": "a251fd7b-edb4-4a77-8144-1575b076b2ea",
     "workflowId": "b5ifbBkBjfJ24cT0",
     "nodes": [
       {
@@ -1283,10 +1302,10 @@
         "type": "n8n-nodes-base.webhook",
         "typeVersion": 2.1,
         "position": [
-          -1072,
-          144
+          -704,
+          272
         ],
-        "id": "6a031cbc-53f1-4c8b-b67b-452e36593430",
+        "id": "ff3b9b99-e5dd-4a08-b72a-a95ff56a43a9",
         "name": "Webhook",
         "webhookId": "404831a6-fb41-46cd-8399-610cd5c97b46"
       },
@@ -1411,10 +1430,10 @@
         "type": "n8n-nodes-base.switch",
         "typeVersion": 3.4,
         "position": [
-          -864,
-          96
+          -496,
+          224
         ],
-        "id": "50c1bcd9-1fa2-4e08-ada0-d0b110a1391d",
+        "id": "02a68c67-fc6e-4d5a-b27b-e2646b56188d",
         "name": "Switch"
       },
       {
@@ -1444,10 +1463,10 @@
         "type": "n8n-nodes-base.filter",
         "typeVersion": 2.2,
         "position": [
-          -368,
-          -128
+          0,
+          0
         ],
-        "id": "b2b31b4a-33b8-438e-b6f0-4d293483592f",
+        "id": "65784b32-f0dc-4a57-ac06-0410882c01c1",
         "name": "Filter_Status"
       },
       {
@@ -1467,10 +1486,10 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          -96,
-          -128
+          272,
+          0
         ],
-        "id": "eba077ae-9286-4533-8819-cd51dcfcc277",
+        "id": "a50d6889-3131-4b96-b204-48d7349a9313",
         "name": "Set_UniqueID"
       },
       {
@@ -1482,10 +1501,10 @@
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.6,
         "position": [
-          176,
-          -128
+          544,
+          0
         ],
-        "id": "1c699480-bd7c-48ad-bbec-6dc497a7f350",
+        "id": "0efaa601-ee04-4d4b-abd5-71a20e600196",
         "name": "Get_User",
         "credentials": {
           "postgres": {
@@ -1501,10 +1520,10 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          432,
-          -128
+          800,
+          0
         ],
-        "id": "440624c0-938a-4f55-a9a3-3e1cefcac599",
+        "id": "397a3824-db4d-4d4f-a106-ae66c101995b",
         "name": "Extract_Data"
       },
       {
@@ -1601,10 +1620,10 @@
         "type": "n8n-nodes-base.executeWorkflow",
         "typeVersion": 1.2,
         "position": [
-          672,
-          -128
+          1040,
+          0
         ],
-        "id": "67c63fc3-d1ea-4c19-9956-c0b1f17dfd06",
+        "id": "2c077543-754b-4466-b410-b1f02708c573",
         "name": "Criar_Evento_Calendar"
       },
       {
@@ -1616,10 +1635,10 @@
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.6,
         "position": [
-          944,
-          -128
+          1312,
+          0
         ],
-        "id": "f03c761f-4cca-4202-93bb-0755642b0746",
+        "id": "b0574460-9046-437f-932a-8fbba94a49a2",
         "name": "Update_User",
         "credentials": {
           "postgres": {
@@ -1637,10 +1656,10 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          1200,
-          -128
+          1568,
+          0
         ],
-        "id": "13a3c7cf-da11-4ce4-9951-d81f37a70a29",
+        "id": "672b1f61-999e-48d8-a593-6b5f572f3ba6",
         "name": "Edit Fields"
       },
       {
@@ -1674,10 +1693,10 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
-          1456,
-          -128
+          1824,
+          0
         ],
-        "id": "d6f94058-4fc1-4f8c-8355-6302fa80b954",
+        "id": "0f2ae43c-6d34-4d67-ab76-41176d24b95b",
         "name": "Enviar_Confirmacao"
       },
       {
@@ -1707,10 +1726,10 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
-          1712,
-          -128
+          2080,
+          0
         ],
-        "id": "decb22e6-53a6-4cbf-8c68-469c7d70f3e5",
+        "id": "754fadb9-c59a-4c34-a241-a34313bae190",
         "name": "Add_Label_Agendada"
       },
       {
@@ -1740,10 +1759,10 @@
         "type": "n8n-nodes-base.filter",
         "typeVersion": 2.2,
         "position": [
-          -368,
-          144
+          0,
+          272
         ],
-        "id": "f1f12dfa-99e0-42b1-b6e0-f1fb501e36ac",
+        "id": "fb3a99aa-5ed8-43d7-8fa5-cf5357f6992b",
         "name": "Filter_Status_Plano"
       },
       {
@@ -1769,25 +1788,25 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          -96,
-          144
+          272,
+          272
         ],
-        "id": "aedcb957-2cc8-4d52-9a5e-8680ed1ad66d",
+        "id": "75f2242d-31af-4f06-a2f8-00c8b4d36d1f",
         "name": "Set_UniqueID_Plano"
       },
       {
         "parameters": {
           "operation": "executeQuery",
-          "query": "SELECT user_id, usage, actual_stage, account, inbox, conversation, contact FROM users WHERE user_id = '{{ $json.unique_id }}'",
+          "query": "SELECT user_id, subscription, actual_stage, account, inbox, conversation, contact FROM users WHERE user_id = '{{ $json.unique_id }}'",
           "options": {}
         },
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.6,
         "position": [
-          176,
-          144
+          544,
+          272
         ],
-        "id": "681843db-677e-4974-bb00-1c736e09eff1",
+        "id": "9b729d5b-9869-4a4c-ad85-10eaf6709893",
         "name": "Get_User_Plano",
         "credentials": {
           "postgres": {
@@ -1803,10 +1822,10 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          432,
-          144
+          800,
+          272
         ],
-        "id": "77b12bea-a701-45bd-b861-de19df3c0a92",
+        "id": "ca71d861-92e2-43c8-b423-d5fb6f524e96",
         "name": "Extract_Data_Plano"
       },
       {
@@ -1836,25 +1855,25 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2,
         "position": [
-          672,
-          144
+          1040,
+          272
         ],
-        "id": "aae59c4f-fed2-4063-a051-0d71ba9cf360",
+        "id": "8744e500-c3ad-48d7-b0ed-2735de3a37ac",
         "name": "IF_Tipo_Plano"
       },
       {
         "parameters": {
           "operation": "executeQuery",
-          "query": "UPDATE users\nSET\n  usage = usage || jsonb_build_object(\n    'plan_type', 'pago',\n    'monthly_usage', 0,\n    'usage_limit', 1000,\n    'plan_start', NOW()::text,\n    'plan_expires', (NOW() + INTERVAL '30 days')::text\n  ),\n  actual_stage = 2,\n  email = '{{ $('Webhook').item.json.body.customer.email }}',\n  updated_at = NOW()\nWHERE user_id = '{{ $json.unique_id }}'\nRETURNING user_id",
+          "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_type',   'mensal',\n    'daily_limit', 99999,\n    'plan_start',  NOW()::text,\n    'plan_expires',(NOW() + INTERVAL '30 days')::text\n  ),\n  actual_stage = 2,\n  email = '{{ $('Webhook').item.json.body.customer.email }}',\n  updated_at = NOW()\nWHERE user_id = '{{ $json.unique_id }}'\nRETURNING user_id",
           "options": {}
         },
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.6,
         "position": [
-          944,
-          128
+          1312,
+          256
         ],
-        "id": "20f5e1f0-b600-4a41-99c2-a112001477c6",
+        "id": "642e4757-6659-4a9d-9d1f-cefda7ee0788",
         "name": "Activate_Mensal",
         "credentials": {
           "postgres": {
@@ -1866,16 +1885,16 @@
       {
         "parameters": {
           "operation": "executeQuery",
-          "query": "UPDATE users\nSET\n  usage = usage || jsonb_build_object(\n    'plan_type', 'pago',\n    'monthly_usage', 0,\n    'usage_limit', 1000,\n    'plan_start', NOW()::text,\n    'plan_expires', (NOW() + INTERVAL '365 days')::text\n  ),\n  actual_stage = 2,\n  email = '{{ $('Webhook').item.json.body.customer.email }}',\n  updated_at = NOW()\nWHERE user_id = '{{ $json.unique_id }}'\nRETURNING user_id",
+          "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_type',   'anual',\n    'daily_limit', 99999,\n    'plan_start',  NOW()::text,\n    'plan_expires',(NOW() + INTERVAL '365 days')::text\n  ),\n  actual_stage = 2,\n  email = '{{ $('Webhook').item.json.body.customer.email }}',\n  updated_at = NOW()\nWHERE user_id = '{{ $json.unique_id }}'\nRETURNING user_id",
           "options": {}
         },
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.6,
         "position": [
-          944,
-          368
+          1312,
+          496
         ],
-        "id": "02926e26-3f49-448d-b8bc-da5d450d4d42",
+        "id": "7fcc8663-1c68-495b-af91-d7f34b811e7b",
         "name": "Activate_Anual",
         "credentials": {
           "postgres": {
@@ -1902,7 +1921,7 @@
             "parameters": [
               {
                 "name": "content",
-                "value": "Que bom ter você aqui! 💛\nSeu plano mensal está ativo e você já tem acesso ilimitado ao Aline Cuida.\nPode continuar me chamando quando precisar — estou aqui 24h para te ajudar no cuidado com seu filho(a)"
+                "value": "Tudo certo! ✅\n\nSeu plano *Premium Mensal* está ativo agora.\n\nA partir deste momento você tem acesso ilimitado à Aline Cuida — sem limite de mensagens.\n\nPode continuar a conversa normalmente! 😊"
               },
               {
                 "name": "message_type",
@@ -1915,10 +1934,10 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
-          1200,
-          128
+          1568,
+          256
         ],
-        "id": "1a98a94b-0c12-4cc2-b278-086445494f90",
+        "id": "95651de1-e1e8-4c65-b3c5-23939c5f3e1d",
         "name": "Enviar_Confirmacao_Mensal"
       },
       {
@@ -1939,7 +1958,7 @@
             "parameters": [
               {
                 "name": "content",
-                "value": "=Que bom ter você aqui por mais tempo! 💛 Seu plano anual está ativo e você já tem acesso ilimitado ao Aline Cuida pelo próximo ano. Pode continuar me chamando quando precisar — estou aqui 24h para te ajudar no cuidado com seu filho(a)."
+                "value": "Tudo certo! ✅\n\nSeu plano *Premium Anual* está ativo agora.\n\nA partir deste momento você tem acesso ilimitado à Aline Cuida — sem limite de mensagens pelo próximo ano.\n\nPode continuar a conversa normalmente! 😊"
               },
               {
                 "name": "message_type",
@@ -1952,10 +1971,10 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
-          1200,
-          368
+          1568,
+          496
         ],
-        "id": "3897f99d-a60f-4b86-93e6-9991852e3fd3",
+        "id": "f6031aa4-cb6e-4945-817d-2ba9e47c801d",
         "name": "Enviar_Confirmacao_Anual"
       },
       {
@@ -1981,25 +2000,25 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          -368,
-          400
+          0,
+          528
         ],
-        "id": "7588a245-4157-467e-916c-49606f310127",
+        "id": "e7f59112-c67b-4efd-9ace-fd1ce0419cef",
         "name": "Set_UniqueID_Renewal"
       },
       {
         "parameters": {
           "operation": "executeQuery",
-          "query": "SELECT user_id, account, inbox, conversation, contact\nFROM users\nWHERE user_id = '{{ $json.unique_id }}'",
+          "query": "SELECT user_id, account, inbox, conversation FROM users WHERE user_id = '{{ $json.unique_id }}'",
           "options": {}
         },
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.6,
         "position": [
-          -96,
-          400
+          272,
+          528
         ],
-        "id": "f68e0574-8261-4525-a307-e6d9b3aee184",
+        "id": "4ab4e8e9-e06b-4c51-8e00-dc4249782ed9",
         "name": "Get_User_Renewal",
         "credentials": {
           "postgres": {
@@ -2011,16 +2030,16 @@
       {
         "parameters": {
           "operation": "executeQuery",
-          "query": "UPDATE users\nSET\n  usage = usage || jsonb_build_object(\n    'monthly_usage', 0,\n    'plan_expires', CASE\n      WHEN '{{ $('Set_UniqueID_Renewal').item.json.plan_interval }}' = 'YEARLY'\n      THEN (NOW() + INTERVAL '365 days')::text\n      ELSE (NOW() + INTERVAL '30 days')::text\n    END\n  ),\n  updated_at = NOW()\nWHERE user_id = '{{ $json.user_id }}'\nRETURNING user_id",
+          "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_expires', CASE\n      WHEN '{{ $('Set_UniqueID_Renewal').item.json.plan_interval }}' = 'YEARLY'\n      THEN (NOW() + INTERVAL '365 days')::text\n      ELSE (NOW() + INTERVAL '30 days')::text\n    END\n  ),\n  updated_at = NOW()\nWHERE user_id = '{{ $json.user_id }}'\nRETURNING user_id",
           "options": {}
         },
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.6,
         "position": [
-          176,
-          400
+          544,
+          528
         ],
-        "id": "21168e37-73f1-44de-8663-412e38e32d9a",
+        "id": "3850080e-000e-4d00-b52a-5cd7fc1fc955",
         "name": "Update_Renewal",
         "credentials": {
           "postgres": {
@@ -2046,10 +2065,10 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          -368,
-          672
+          0,
+          800
         ],
-        "id": "4e7bcc09-dce7-4f9a-bca9-29a23ffe8f66",
+        "id": "1d61a3b8-258b-43fe-bf84-8382f7bfc9b0",
         "name": "Set_UniqueID_Cancel"
       },
       {
@@ -2061,10 +2080,10 @@
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.6,
         "position": [
-          -96,
-          672
+          272,
+          800
         ],
-        "id": "44ef0baf-3187-4ae7-ac2e-90cacf44780d",
+        "id": "a8e7badd-cb6a-4523-a0ac-0fee4b7cab04",
         "name": "Get_User_Cancel",
         "credentials": {
           "postgres": {
@@ -2076,16 +2095,16 @@
       {
         "parameters": {
           "operation": "executeQuery",
-          "query": "UPDATE users\nSET\n  usage = usage || jsonb_build_object(\n    'plan_type', 'gratuito',\n    'usage_limit', 50,\n    'plan_expires', NOW()::text\n  ),\n  updated_at = NOW()\nWHERE user_id = '{{ $json.user_id }}'\nRETURNING user_id",
+          "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_type',   'gratuito',\n    'daily_limit', 8,\n    'plan_expires', NOW()::text\n  ),\n  updated_at = NOW()\nWHERE user_id = '{{ $json.user_id }}'\nRETURNING user_id",
           "options": {}
         },
         "type": "n8n-nodes-base.postgres",
         "typeVersion": 2.6,
         "position": [
-          176,
-          672
+          544,
+          800
         ],
-        "id": "3856fdb3-ce05-4ce5-9652-51a1a451b4e8",
+        "id": "8b7be07c-36f5-40cc-8cfe-3e44d3eb41fd",
         "name": "Update_Cancel",
         "credentials": {
           "postgres": {
@@ -2112,7 +2131,7 @@
             "parameters": [
               {
                 "name": "content",
-                "value": "=Tudo certo! 💛 Sua assinatura foi cancelada e você voltou ao plano gratuito — continua podendo me chamar dentro do limite diário. Se um dia precisar de acesso ilimitado de novo, é só me avisar!"
+                "value": "Sua assinatura Premium foi cancelada.\n\nVocê voltou ao plano gratuito, com limite de 50 mensagens por mês.\n\nSe quiser reativar o Premium a qualquer momento, é só me chamar! 😊"
               },
               {
                 "name": "message_type",
@@ -2125,10 +2144,10 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
-          432,
-          672
+          800,
+          800
         ],
-        "id": "01ace3b9-8544-4d96-ac69-de220b0ed091",
+        "id": "68e6482a-c6d0-4005-9cd9-2bb89ef2c535",
         "name": "Enviar_Cancelamento"
       }
     ],
@@ -2412,7 +2431,7 @@
       }
     },
     "authors": "System AI SIM",
-    "name": "Version 64bd60fd",
+    "name": "Version a251fd7b",
     "description": "",
     "autosaved": true
   },
