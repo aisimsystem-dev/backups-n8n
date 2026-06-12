@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-11T02:45:12.854Z",
+  "updatedAt": "2026-06-11T21:03:48.896Z",
   "createdAt": "2026-05-01T02:54:52.892Z",
   "id": "lfu49lvSJTjUuhZN",
   "name": "SYSTEM · GATEWAY",
@@ -375,7 +375,7 @@
             {
               "id": "d-u1",
               "name": "unique_id",
-              "value": "={{ $('Webhook_System').item.json.body.conversation.messages[0].account_id }}-{{ $('Webhook_System').item.json.body.conversation.messages[0].inbox_id }}-{{ $('Webhook_System').item.json.body.conversation.messages[0].conversation_id }}",
+              "value": "={{ $('Webhook_System').item.json.body.account.id }}-{{ $('Webhook_System').item.json.body.conversation.inbox_id }}-{{ $('Webhook_System').item.json.body.conversation.id }}",
               "type": "string"
             }
           ]
@@ -3047,23 +3047,23 @@
           "headers": {
             "host": "hook.aisim.cloud",
             "user-agent": "rest-client/2.1.0 (linux-musl x86_64) ruby/3.4.4p34",
-            "content-length": "6855",
+            "content-length": "6006",
             "accept": "application/json",
             "accept-encoding": "gzip, br",
-            "baggage": "sentry-trace_id=f1f5125af41c414eaf0b3b14fa7f747b,sentry-environment=production,sentry-public_key=f3372fb85d97fe1428ef9456fc197008",
+            "baggage": "sentry-trace_id=29c0eab42541474b8d18499448cc9efb,sentry-environment=production,sentry-public_key=f3372fb85d97fe1428ef9456fc197008",
             "cdn-loop": "cloudflare; loops=1",
-            "cf-connecting-ip": "72.60.141.143",
+            "cf-connecting-ip": "201.23.84.96",
             "cf-ipcountry": "BR",
-            "cf-ray": "a087ec57ac7661e0-GRU",
+            "cf-ray": "a0a386f9e9782524-GRU",
             "cf-visitor": "{\"scheme\":\"https\"}",
             "content-type": "application/json",
-            "sentry-trace": "f1f5125af41c414eaf0b3b14fa7f747b-02dbae307fd64c0b",
-            "x-forwarded-for": "72.60.141.143, 104.23.254.19",
+            "sentry-trace": "29c0eab42541474b8d18499448cc9efb-3988d74e47f14189",
+            "x-forwarded-for": "201.23.84.96, 172.71.239.13",
             "x-forwarded-host": "hook.aisim.cloud",
             "x-forwarded-port": "443",
             "x-forwarded-proto": "https",
             "x-forwarded-server": "d14c37b23d56",
-            "x-real-ip": "104.23.254.19"
+            "x-real-ip": "172.71.239.13"
           },
           "params": {},
           "query": {},
@@ -3075,10 +3075,10 @@
             "additional_attributes": {},
             "status": "sent",
             "content_attributes": {
-              "external_created_at": 1780921982
+              "external_created_at": 1781211435
             },
             "content_type": "text",
-            "content": "",
+            "content": "Henrique, 15/03/2021",
             "conversation": {
               "additional_attributes": {},
               "can_reply": true,
@@ -3093,70 +3093,55 @@
                 "hmac_verified": false,
                 "pubsub_token": "oZwVT7NHDoX8pegvUs9MW8h5"
               },
-              "id": 284,
+              "id": 560,
               "inbox_id": 89,
               "messages": [
                 {
-                  "id": 2285114,
-                  "content": "",
+                  "id": 2334278,
+                  "content": "Henrique, 15/03/2021",
                   "account_id": 9,
                   "inbox_id": 89,
-                  "conversation_id": 284,
+                  "conversation_id": 560,
                   "message_type": 0,
-                  "created_at": 1780921983,
-                  "updated_at": "2026-06-08T12:33:03.440Z",
+                  "created_at": 1781211436,
+                  "updated_at": "2026-06-11T20:57:16.497Z",
                   "private": false,
                   "status": "sent",
-                  "source_id": "ACD200C873ED1E4E65E4178481342870",
+                  "source_id": "3EB03395834C4210F7F698",
                   "content_type": "text",
                   "content_attributes": {
-                    "external_created_at": 1780921982
+                    "external_created_at": 1781211435
                   },
                   "sender_type": "Contact",
                   "sender_id": 44889,
                   "external_source_ids": {},
                   "additional_attributes": {},
-                  "processed_message_content": "",
+                  "processed_message_content": "Henrique, 15/03/2021",
                   "sentiment": {},
                   "transcribed_text": null,
                   "conversation": {
                     "assignee_id": null,
-                    "unread_count": 3,
-                    "last_activity_at": 1780921983,
+                    "unread_count": 4,
+                    "last_activity_at": 1781211436,
                     "contact_inbox": {
                       "source_id": "44889"
                     }
                   },
-                  "attachments": [
-                    {
-                      "id": 142650,
-                      "message_id": 2285114,
-                      "file_type": "audio",
-                      "account_id": 9,
-                      "extension": null,
-                      "data_url": "/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBelUvQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--017226a0406a41e7d4dd181e4d260d4579d863a7/audio_ACD200C873ED1E4E65E4178481342870_20260608.ogg",
-                      "thumb_url": "",
-                      "file_size": 11183,
-                      "width": null,
-                      "height": null,
-                      "transcribed_text": ""
-                    }
-                  ],
                   "sender": {
                     "additional_attributes": {
                       "description": "Usuário: Felipe Nóbrega. | Filho João (5 anos) com febre e manchas pruriginosas. | Agendou teleconsulta para o filho em 13/04 às 14h."
                     },
                     "custom_attributes": {
-                      "avisa_whatsapp_jid": "558189273284@s.whatsapp.net",
+                      "avisa_whatsapp_jid": "558189273284:72@s.whatsapp.net",
                       "avisa_whatsapp_lid": "1980399407123@lid",
                       "avisa_profile_pic_url": "https://pps.whatsapp.net/v/t61.24694-24/545789300_793460280122456_8392418379581031695_n.jpg?ccb=11-4&oh=01_Q5Aa4AGTwHy77J-C1_zg9o0ww6ar6F718TQpQLIXKtEECbiQog&oe=69D94E71&_nc_sid=5e03e0&_nc_cat=111",
                       "avisa_profile_pic_hash": "WBmwCQiOVn9OZkXCeDGIRE9d+DubHmIWVjwRQPsqMwA=",
-                      "avisa_avatar_last_fetched_at": "2026-06-07T19:10:25Z"
+                      "avisa_avatar_last_fetched_at": "2026-06-11T14:54:46Z"
                     },
                     "email": null,
                     "id": 44889,
                     "identifier": null,
-                    "name": "Felipe Nóbrega",
+                    "name": "Felipe",
                     "phone_number": "+558189273284",
                     "thumbnail": "https://app.cria.chat/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBOHZVQVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a8beea643ab40aeaa30327442b49e0146c3601f5/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RTNKbGMybDZaVjkwYjE5bWFXeHNXd2RwQWZvdyIsImV4cCI6bnVsbCwicHVyIjoidmFyaWF0aW9uIn19--fe7a3d81085c7a9c53d207849a12dc800c8e5e4f/545789300_793460280122456_8392418379581031695_n.jpg",
                     "blocked": false,
@@ -3164,26 +3149,23 @@
                   }
                 }
               ],
-              "labels": [
-                "ativo",
-                "filho_cadastrado"
-              ],
+              "labels": [],
               "meta": {
                 "sender": {
                   "additional_attributes": {
                     "description": "Usuário: Felipe Nóbrega. | Filho João (5 anos) com febre e manchas pruriginosas. | Agendou teleconsulta para o filho em 13/04 às 14h."
                   },
                   "custom_attributes": {
-                    "avisa_whatsapp_jid": "558189273284@s.whatsapp.net",
+                    "avisa_whatsapp_jid": "558189273284:72@s.whatsapp.net",
                     "avisa_whatsapp_lid": "1980399407123@lid",
                     "avisa_profile_pic_url": "https://pps.whatsapp.net/v/t61.24694-24/545789300_793460280122456_8392418379581031695_n.jpg?ccb=11-4&oh=01_Q5Aa4AGTwHy77J-C1_zg9o0ww6ar6F718TQpQLIXKtEECbiQog&oe=69D94E71&_nc_sid=5e03e0&_nc_cat=111",
                     "avisa_profile_pic_hash": "WBmwCQiOVn9OZkXCeDGIRE9d+DubHmIWVjwRQPsqMwA=",
-                    "avisa_avatar_last_fetched_at": "2026-06-07T19:10:25Z"
+                    "avisa_avatar_last_fetched_at": "2026-06-11T14:54:46Z"
                   },
                   "email": null,
                   "id": 44889,
                   "identifier": null,
-                  "name": "Felipe Nóbrega",
+                  "name": "Felipe",
                   "phone_number": "+558189273284",
                   "thumbnail": "https://app.cria.chat/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBOHZVQVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a8beea643ab40aeaa30327442b49e0146c3601f5/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RTNKbGMybDZaVjkwYjE5bWFXeHNXd2RwQWZvdyIsImV4cCI6bnVsbCwicHVyIjoidmFyaWF0aW9uIn19--fe7a3d81085c7a9c53d207849a12dc800c8e5e4f/545789300_793460280122456_8392418379581031695_n.jpg",
                   "blocked": false,
@@ -3196,19 +3178,19 @@
               "status": "open",
               "custom_attributes": {},
               "snoozed_until": null,
-              "unread_count": 3,
+              "unread_count": 4,
               "first_reply_created_at": null,
               "priority": null,
-              "waiting_since": 1775405895,
-              "agent_last_seen_at": 1780760441,
+              "waiting_since": 1781210935,
+              "agent_last_seen_at": 0,
               "contact_last_seen_at": 0,
-              "last_activity_at": 1780921983,
-              "timestamp": 1780921983,
-              "created_at": 1775405895,
-              "updated_at": 1780921983.4474835
+              "last_activity_at": 1781211436,
+              "timestamp": 1781211436,
+              "created_at": 1781210935,
+              "updated_at": 1781211436.5145612
             },
-            "created_at": "2026-06-08T12:33:03.440Z",
-            "id": 2285114,
+            "created_at": "2026-06-11T20:57:16.497Z",
+            "id": 2334278,
             "inbox": {
               "id": 89,
               "name": "Aline"
@@ -3225,36 +3207,21 @@
               },
               "avatar": "https://app.cria.chat/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBOHZVQVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a8beea643ab40aeaa30327442b49e0146c3601f5/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RTNKbGMybDZaVjkwYjE5bWFXeHNXd2RwQWZvdyIsImV4cCI6bnVsbCwicHVyIjoidmFyaWF0aW9uIn19--fe7a3d81085c7a9c53d207849a12dc800c8e5e4f/545789300_793460280122456_8392418379581031695_n.jpg",
               "custom_attributes": {
-                "avisa_whatsapp_jid": "558189273284@s.whatsapp.net",
+                "avisa_whatsapp_jid": "558189273284:72@s.whatsapp.net",
                 "avisa_whatsapp_lid": "1980399407123@lid",
                 "avisa_profile_pic_url": "https://pps.whatsapp.net/v/t61.24694-24/545789300_793460280122456_8392418379581031695_n.jpg?ccb=11-4&oh=01_Q5Aa4AGTwHy77J-C1_zg9o0ww6ar6F718TQpQLIXKtEECbiQog&oe=69D94E71&_nc_sid=5e03e0&_nc_cat=111",
                 "avisa_profile_pic_hash": "WBmwCQiOVn9OZkXCeDGIRE9d+DubHmIWVjwRQPsqMwA=",
-                "avisa_avatar_last_fetched_at": "2026-06-07T19:10:25Z"
+                "avisa_avatar_last_fetched_at": "2026-06-11T14:54:46Z"
               },
               "email": null,
               "id": 44889,
               "identifier": null,
-              "name": "Felipe Nóbrega",
+              "name": "Felipe",
               "phone_number": "+558189273284",
               "thumbnail": "https://app.cria.chat/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBOHZVQVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a8beea643ab40aeaa30327442b49e0146c3601f5/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RTNKbGMybDZaVjkwYjE5bWFXeHNXd2RwQWZvdyIsImV4cCI6bnVsbCwicHVyIjoidmFyaWF0aW9uIn19--fe7a3d81085c7a9c53d207849a12dc800c8e5e4f/545789300_793460280122456_8392418379581031695_n.jpg",
               "blocked": false
             },
-            "source_id": "ACD200C873ED1E4E65E4178481342870",
-            "attachments": [
-              {
-                "id": 142650,
-                "message_id": 2285114,
-                "file_type": "audio",
-                "account_id": 9,
-                "extension": null,
-                "data_url": "/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBelUvQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--017226a0406a41e7d4dd181e4d260d4579d863a7/audio_ACD200C873ED1E4E65E4178481342870_20260608.ogg",
-                "thumb_url": "",
-                "file_size": 11183,
-                "width": null,
-                "height": null,
-                "transcribed_text": ""
-              }
-            ],
+            "source_id": "3EB03395834C4210F7F698",
             "event": "message_created"
           },
           "webhookUrl": "https://hook.aisim.cloud/webhook/System-core",
@@ -3266,8 +3233,8 @@
       }
     ]
   },
-  "versionId": "7f2c944c-0632-403a-a14b-06bbc39e87d4",
-  "activeVersionId": "a9da8308-e034-4b62-b152-57dc8e28676b",
+  "versionId": "db72dc01-b867-4819-b24a-734d5d7dd472",
+  "activeVersionId": "db72dc01-b867-4819-b24a-734d5d7dd472",
   "triggerCount": 1,
   "shared": [
     {
@@ -3279,9 +3246,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-06-11T02:37:24.349Z",
-    "createdAt": "2026-06-11T02:37:20.805Z",
-    "versionId": "a9da8308-e034-4b62-b152-57dc8e28676b",
+    "updatedAt": "2026-06-11T15:23:37.555Z",
+    "createdAt": "2026-06-11T15:23:34.763Z",
+    "versionId": "db72dc01-b867-4819-b24a-734d5d7dd472",
     "workflowId": "lfu49lvSJTjUuhZN",
     "nodes": [
       {
@@ -3653,7 +3620,7 @@
               {
                 "id": "d-u1",
                 "name": "unique_id",
-                "value": "={{ $('Webhook_System').item.json.body.conversation.messages[0].account_id }}-{{ $('Webhook_System').item.json.body.conversation.messages[0].inbox_id }}-{{ $('Webhook_System').item.json.body.conversation.messages[0].conversation_id }}",
+                "value": "={{ $('Webhook_System').item.json.body.account.id }}-{{ $('Webhook_System').item.json.body.conversation.inbox_id }}-{{ $('Webhook_System').item.json.body.conversation.id }}",
                 "type": "string"
               }
             ]
@@ -4333,7 +4300,7 @@
         "parameters": {
           "operation": "get",
           "propertyName": "messageUser",
-          "key": "=inputMessage-{{ $('DATA').item.json.conversation.id }}",
+          "key": "=inputMessage-{{ $('DATA').item.json.unique_id }}",
           "options": {}
         },
         "type": "n8n-nodes-base.redis",
@@ -4762,7 +4729,7 @@
                 "rightValue": "",
                 "operator": {
                   "type": "string",
-                  "operation": "exists",
+                  "operation": "notEmpty",
                   "singleValue": true
                 }
               }
@@ -4829,13 +4796,13 @@
       {
         "parameters": {
           "method": "POST",
-          "url": "={{ $('data').item.json.data.payload.meta.base_url }}/api/v1/accounts/{{ $('data').item.json.data.payload.meta.account_id }}/conversations/{{ $('data').item.json.data.payload.conversation.id }}/messages",
+          "url": "={{ $('BUILD_PAYLOAD').item.json.meta.base_url }}/api/v1/accounts/{{ $('BUILD_PAYLOAD').item.json.meta.account_id }}/conversations/{{ $('BUILD_PAYLOAD').item.json.conversation.id }}/messages",
           "sendHeaders": true,
           "headerParameters": {
             "parameters": [
               {
                 "name": "api_access_token",
-                "value": "={{ $('data').item.json.data.payload.project_bot.token }}"
+                "value": "={{ $('BUILD_PAYLOAD').item.json.project_bot.token }}"
               }
             ]
           },
@@ -6307,7 +6274,7 @@
       }
     },
     "authors": "System AI SIM",
-    "name": "Version a9da8308",
+    "name": "Version db72dc01",
     "description": "",
     "autosaved": true
   },
