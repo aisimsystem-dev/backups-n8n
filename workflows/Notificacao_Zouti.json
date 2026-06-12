@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-11T13:49:37.135Z",
+  "updatedAt": "2026-06-11T23:50:52.751Z",
   "createdAt": "2026-05-18T13:08:01.275Z",
   "id": "b5ifbBkBjfJ24cT0",
   "name": "Notificação_Zouti",
@@ -148,302 +148,6 @@
       ],
       "id": "02a68c67-fc6e-4d5a-b27b-e2646b56188d",
       "name": "Switch"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "check-paid",
-              "leftValue": "={{ $json.body.status }}",
-              "rightValue": "PAID",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.filter",
-      "typeVersion": 2.2,
-      "position": [
-        0,
-        0
-      ],
-      "id": "65784b32-f0dc-4a57-ac06-0410882c01c1",
-      "name": "Filter_Status"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "set-unique-id",
-              "name": "unique_id",
-              "value": "={{ $json.body.utm_data.utm_content }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        272,
-        0
-      ],
-      "id": "a50d6889-3131-4b96-b204-48d7349a9313",
-      "name": "Set_UniqueID"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT user_id, custom_attributes, email, account, inbox, conversation, contact FROM users WHERE user_id = '{{ $json.unique_id }}'",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        544,
-        0
-      ],
-      "id": "0efaa601-ee04-4d4b-abd5-71a20e600196",
-      "name": "Get_User",
-      "credentials": {
-        "postgres": {
-          "id": "YeIX3GgiXLm97LoO",
-          "name": "DB.NEW-SYSTEM"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const user = $input.item.json;\nconst attrs = user.custom_attributes;\n\nreturn {\n  json: {\n    unique_id: user.user_id,\n    account_id: user.account,\n    inbox_id: user.inbox,\n    conversation_id: user.conversation,\n    contact_id: user.contact,\n    guardian_name: attrs.guardian_name || '',\n    guardian_email: user.email || attrs.email || '',\n    appointment_child: attrs.appointment_child || '',\n    appointment_date: attrs.appointment_date || '',\n    appointment_end: attrs.appointment_end || ''\n  }\n};"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        800,
-        0
-      ],
-      "id": "397a3824-db4d-4d4f-a106-ae66c101995b",
-      "name": "Extract_Data"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "53DQAjgB3PVYf595",
-          "mode": "id"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "request": "criar_evento_confirmado",
-            "unique_id": "={{ $json.unique_id }}",
-            "guardian_name": "={{ $json.guardian_name }}",
-            "child_name": "={{ $json.appointment_child }}",
-            "guardian_email": "={{ $json.guardian_email }}",
-            "appointment_date": "={{ $json.appointment_date }}",
-            "appointment_end": "={{ $json.appointment_end }}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "request",
-              "displayName": "request",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string"
-            },
-            {
-              "id": "unique_id",
-              "displayName": "unique_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string"
-            },
-            {
-              "id": "guardian_name",
-              "displayName": "guardian_name",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string"
-            },
-            {
-              "id": "child_name",
-              "displayName": "child_name",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string"
-            },
-            {
-              "id": "guardian_email",
-              "displayName": "guardian_email",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string"
-            },
-            {
-              "id": "appointment_date",
-              "displayName": "appointment_date",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string"
-            },
-            {
-              "id": "appointment_end",
-              "displayName": "appointment_end",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string"
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {
-          "waitForSubWorkflow": true
-        }
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.2,
-      "position": [
-        1040,
-        0
-      ],
-      "id": "2c077543-754b-4466-b410-b1f02708c573",
-      "name": "Criar_Evento_Calendar"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE users\nSET custom_attributes = custom_attributes || jsonb_build_object(\n  'consulta_confirmada', true,\n  'consulta_data', '{{ $('Extract_Data').item.json.appointment_date }}',\n  'consulta_crianca', '{{ $('Extract_Data').item.json.appointment_child }}'\n),\nemail = '{{ $('Webhook').item.json.body.customer.email }}',\nupdated_at = NOW()\nWHERE user_id = '{{ $('Extract_Data').item.json.unique_id }}'",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1312,
-        0
-      ],
-      "id": "b0574460-9046-437f-932a-8fbba94a49a2",
-      "name": "Update_User",
-      "credentials": {
-        "postgres": {
-          "id": "YeIX3GgiXLm97LoO",
-          "name": "DB.NEW-SYSTEM"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "mode": "raw",
-        "jsonOutput": "={{ $('Criar_Evento_Calendar').item.json.output }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1568,
-        0
-      ],
-      "id": "672b1f61-999e-48d8-a593-6b5f572f3ba6",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/messages",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "api_access_token",
-              "value": "5t44c4FEyC7caSi9TrJng417"
-            }
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "content",
-              "value": "=Pagamento confirmado! ✅\n\nA teleconsulta de *{{ $('Extract_Data').item.json.appointment_child }}* está agendada para *{{ DateTime.fromISO($('Extract_Data').item.json.appointment_date).setZone('America/Recife').setLocale('pt-BR').toFormat('cccc, dd/MM/yyyy \\'às\\' HH:mm') }}* com a Dra. Aline Rodrigues.\n\nO convite com o link do Google Meet foi enviado para *{{ $('Extract_Data').item.json.guardian_email }}*.\n\nLINK DA TELECONSULTA: {{ $json.details.meet_link }}\n\nQualquer dúvida até lá, pode me chamar aqui. 😊"
-            },
-            {
-              "name": "message_type",
-              "value": "outgoing"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1824,
-        0
-      ],
-      "id": "0f2ae43c-6d34-4d67-ab76-41176d24b95b",
-      "name": "Enviar_Confirmacao"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/labels",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "api_access_token",
-              "value": "PArdJisYhtUCfEo9ZurbzxQ9"
-            }
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "labels",
-              "value": "={{ [\"consulta_agendada\"] }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        2080,
-        0
-      ],
-      "id": "754fadb9-c59a-4c34-a241-a34313bae190",
-      "name": "Add_Label_Agendada"
     },
     {
       "parameters": {
@@ -835,7 +539,7 @@
           "parameters": [
             {
               "name": "api_access_token",
-              "value": "sNTEed3CPvwoZv88w6e5M7Ly"
+              "value": "5t44c4FEyC7caSi9TrJng417"
             }
           ]
         },
@@ -862,6 +566,325 @@
       ],
       "id": "68e6482a-c6d0-4005-9cd9-2bb89ef2c535",
       "name": "Enviar_Cancelamento"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "check-paid",
+              "leftValue": "={{ $json.body.status }}",
+              "rightValue": "PAID",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        32
+      ],
+      "id": "9e23b49c-fe8b-4b54-b357-76f45fa4ef1d",
+      "name": "Filter_Status"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "set-unique-id",
+              "name": "unique_id",
+              "value": "={{ $json.body.utm_data.utm_content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        272,
+        32
+      ],
+      "id": "ac9d0f14-2084-422b-a51d-8bfe2b5c354c",
+      "name": "Set_UniqueID"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT user_id, custom_attributes, email, account, inbox, conversation, contact FROM users WHERE user_id = '{{ $json.unique_id }}'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        544,
+        32
+      ],
+      "id": "8f63db0b-b946-4ae6-b3fa-92a8453aa30e",
+      "name": "Get_User",
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const user = $input.item.json;\nconst attrs = user.custom_attributes;\n\nreturn {\n  json: {\n    unique_id: user.user_id,\n    account_id: user.account,\n    inbox_id: user.inbox,\n    conversation_id: user.conversation,\n    contact_id: user.contact,\n    guardian_name: attrs.guardian_name || '',\n    guardian_email: user.email || attrs.email || '',\n    appointment_child: attrs.appointment_child || '',\n    appointment_date: attrs.appointment_date || '',\n    appointment_end: attrs.appointment_end || ''\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        32
+      ],
+      "id": "f1c1b022-0cfc-4c76-ac69-26eb28c01a13",
+      "name": "Extract_Data"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "53DQAjgB3PVYf595",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "request": "criar_evento_confirmado",
+            "unique_id": "={{ $json.unique_id }}",
+            "guardian_name": "={{ $json.guardian_name }}",
+            "child_name": "={{ $json.appointment_child }}",
+            "guardian_email": "={{ $json.guardian_email }}",
+            "appointment_date": "={{ $json.appointment_date }}",
+            "appointment_end": "={{ $json.appointment_end }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "request",
+              "displayName": "request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "unique_id",
+              "displayName": "unique_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "guardian_name",
+              "displayName": "guardian_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "child_name",
+              "displayName": "child_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "guardian_email",
+              "displayName": "guardian_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "appointment_date",
+              "displayName": "appointment_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "appointment_end",
+              "displayName": "appointment_end",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1040,
+        32
+      ],
+      "id": "b540c4b9-6b79-4eec-a5cf-0608d6371ece",
+      "name": "Criar_Evento_Calendar"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE users\nSET custom_attributes = custom_attributes || jsonb_build_object(\n  'consulta_confirmada', true,\n  'consulta_data', '{{ $('Extract_Data').item.json.appointment_date }}',\n  'consulta_crianca', '{{ $('Extract_Data').item.json.appointment_child }}'\n),\nactual_stage = 2,\nemail = '{{ $('Webhook').item.json.body.customer.email }}',\nupdated_at = NOW()\nWHERE user_id = '{{ $('Extract_Data').item.json.unique_id }}'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1312,
+        32
+      ],
+      "id": "418e5273-b6b6-46bd-b406-20cde842b884",
+      "name": "Update_User",
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $('Criar_Evento_Calendar').item.json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1568,
+        32
+      ],
+      "id": "49e5b152-e68b-4fef-9747-88a43b4b5280",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "5t44c4FEyC7caSi9TrJng417"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "=Pagamento confirmado! ✅\n\nA teleconsulta de *{{ $('Extract_Data').item.json.appointment_child }}* está agendada para *{{ DateTime.fromISO($('Extract_Data').item.json.appointment_date).setZone('America/Recife').setLocale('pt-BR').toFormat('cccc, dd/MM/yyyy \\'às\\' HH:mm') }}* com a Dra. Aline Rodrigues.\n\nO convite com o link do Google Meet foi enviado para *{{ $('Extract_Data').item.json.guardian_email }}*.\n\nLINK DA TELECONSULTA: {{ $json.details.meet_link }}\n\nQualquer dúvida até lá, pode me chamar aqui. 😊"
+            },
+            {
+              "name": "message_type",
+              "value": "outgoing"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1824,
+        32
+      ],
+      "id": "43239edd-0c4a-4eb0-a142-d656c9731d4b",
+      "name": "Enviar_Confirmacao"
+    },
+    {
+      "parameters": {
+        "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/labels",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "PArdJisYhtUCfEo9ZurbzxQ9"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2080,
+        32
+      ],
+      "id": "6c85ea3d-703a-4cae-bc60-d8398b676be6",
+      "name": "Get_Labels"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/labels",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "PArdJisYhtUCfEo9ZurbzxQ9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "labels",
+              "value": "={{ [...new Set([...($('Get_Labels').item.json.payload || []).filter(l => l !== 'agendamento'), 'consulta_agendada'])] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2336,
+        32
+      ],
+      "id": "f2d86694-5908-41fb-ba93-f29f5fdea1d0",
+      "name": "Add_Label_Agendada"
     }
   ],
   "connections": {
@@ -909,94 +932,6 @@
         [
           {
             "node": "Set_UniqueID_Cancel",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Filter_Status": {
-      "main": [
-        [
-          {
-            "node": "Set_UniqueID",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set_UniqueID": {
-      "main": [
-        [
-          {
-            "node": "Get_User",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get_User": {
-      "main": [
-        [
-          {
-            "node": "Extract_Data",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract_Data": {
-      "main": [
-        [
-          {
-            "node": "Criar_Evento_Calendar",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Criar_Evento_Calendar": {
-      "main": [
-        [
-          {
-            "node": "Update_User",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Update_User": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "Enviar_Confirmacao",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Enviar_Confirmacao": {
-      "main": [
-        [
-          {
-            "node": "Add_Label_Agendada",
             "type": "main",
             "index": 0
           }
@@ -1141,6 +1076,105 @@
           }
         ]
       ]
+    },
+    "Filter_Status": {
+      "main": [
+        [
+          {
+            "node": "Set_UniqueID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_UniqueID": {
+      "main": [
+        [
+          {
+            "node": "Get_User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_User": {
+      "main": [
+        [
+          {
+            "node": "Extract_Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract_Data": {
+      "main": [
+        [
+          {
+            "node": "Criar_Evento_Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar_Evento_Calendar": {
+      "main": [
+        [
+          {
+            "node": "Update_User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update_User": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Enviar_Confirmacao",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar_Confirmacao": {
+      "main": [
+        [
+          {
+            "node": "Get_Labels",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Labels": {
+      "main": [
+        [
+          {
+            "node": "Add_Label_Agendada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1162,111 +1196,92 @@
           "headers": {
             "host": "hook.aisim.cloud",
             "user-agent": "Zouti-Webhook/1.0",
-            "content-length": "1950",
-            "accept": "*/*",
+            "content-length": "1582",
             "accept-encoding": "gzip, br",
-            "accept-language": "*",
             "cdn-loop": "cloudflare; loops=1",
-            "cf-connecting-ip": "54.226.157.75",
+            "cf-connecting-ip": "100.48.52.242",
             "cf-ipcountry": "US",
-            "cf-ray": "9f6959757d488acc-EWR",
+            "cf-ray": "a0a47f86ee10c502-IAD",
             "cf-visitor": "{\"scheme\":\"https\"}",
             "content-type": "application/json",
-            "sec-fetch-mode": "cors",
-            "url": "https://hook.aisim.cloud/webhook/aline_zouti",
-            "x-forwarded-for": "54.226.157.75, 104.23.253.86",
+            "url": "https://hook.aisim.cloud/webhook/aline_pagamentos",
+            "x-forwarded-for": "100.48.52.242, 104.22.104.17",
             "x-forwarded-host": "hook.aisim.cloud",
             "x-forwarded-port": "443",
             "x-forwarded-proto": "https",
-            "x-forwarded-server": "c29b75a36b5c",
-            "x-real-ip": "104.23.253.86",
-            "x-zouti-event-id": "evt_txtpu5r1pr0ntkkiuw0eaz",
-            "x-zouti-event-type": "ORDER_PAID",
-            "x-zouti-object-id": "ord_yzfjy7jdop15qj8lbq21t4",
-            "x-zouti-object-name": "Order",
-            "x-zouti-signature": "t=1777917043642,v1=b9960a8431756d71d73ebb9dd0fecd81434e595deff1bb30fd047b3f811fce30",
-            "x-zouti-webhook-delivery-id": "webd_86zvrj5kgcy6q8g2mhfrrj9kcg5z",
+            "x-forwarded-server": "d14c37b23d56",
+            "x-real-ip": "104.22.104.17",
+            "x-zouti-event-id": "evt_7u2wunh7molk81mga4nq1w",
+            "x-zouti-event-type": "SUBSCRIPTION_CANCELED",
+            "x-zouti-object-id": "sub_720hxq4617629geot99s4a",
+            "x-zouti-object-name": "Subscription",
+            "x-zouti-signature": "t=1781221616864,v1=5b83e6f38129d0d1ccd3e78247e47b3a71c33225c9b5c56fd9d8dc275669c4fb",
+            "x-zouti-webhook-delivery-id": "webd_trgrua1czsfyfsfjr020wt0hcsp8",
             "x-zouti-webhook-id": "web_bvftvc5cb41n9p6g5f04er"
           },
           "params": {},
           "query": {},
           "body": {
-            "id": "ord_yzfjy7jdop15qj8lbq21t4",
+            "id": "sub_720hxq4617629geot99s4a",
             "account_id": "acc_hw8mw6qaw7v39ic0dpvcus",
-            "status": "PAID",
-            "customer_id": "cus_eko7caj46b0d9hmqzkdkhq",
-            "provider": "ZOUTI",
-            "order_session_id": "os_cor65h22du4prewe0n48j0",
-            "amount_subtotal": 3500,
-            "amount_subtotal_in_brl": 35,
-            "amount_total": 525,
-            "amount_total_in_brl": 5.25,
-            "paid_at": "2026-05-04T17:50:43.570Z",
+            "order_id": "ord_30cykr8wsyi7k5k44pdoab",
+            "status": "CANCELED",
+            "customer": {
+              "id": "cus_htj1ocu6ksa8rhsowhs7ie",
+              "name": "hemelly hadassa de souza",
+              "email": "hemellyhadassa45@gmail.com",
+              "document": "11521816450",
+              "phone": "5581971164347"
+            },
+            "plan": {
+              "id": "prod_offer_plan_yymbj48gx6dcuhqwq29ad0",
+              "name": "Aline Cuida Premium (Mensal)",
+              "amount": 3500,
+              "currency": "BRL",
+              "interval": "MONTHLY",
+              "trial": {
+                "enabled": false,
+                "days": 0
+              }
+            },
+            "payment_method": "PIX",
+            "current_period_start": "2026-06-11T21:30:41.173Z",
+            "current_period_end": "2026-07-11T03:00:00.000Z",
+            "next_payment_date": "2026-07-11T03:00:00.000Z",
+            "canceled_at": "2026-06-11T23:46:56.807Z",
+            "installments": 1,
+            "line_items": [
+              {
+                "name": "Aline Cuida Premium (Mensal)",
+                "description": "Aline Cuida Premium (Mensal)",
+                "type": "SKU",
+                "quantity": 1,
+                "product_id": "prod_59s6t74zvdqqq017bq2ci2",
+                "amount": 3500,
+                "full_amount": 3500,
+                "promotional_amount": 0,
+                "amount_in_brl": 35,
+                "full_amount_in_brl": 35,
+                "promotional_amount_in_brl": 0,
+                "image": "https://zouti-prod-core-media-public.s3.amazonaws.com/media/accounts/acc_hw8mw6qaw7v39ic0dpvcus/products/files/file_6zvd81t2retuae0z3yxjtr_253dbae0-8427-4ba9-9bc8-345ad54a10f0.png",
+                "is_member_area": false,
+                "product_offer_id": "prod_offer_47fam2f02cm5b191knsb8a",
+                "plan_id": "prod_offer_plan_yymbj48gx6dcuhqwq29ad0"
+              }
+            ],
+            "cancel_at_period_end": false,
+            "billing_cycle_count": 1,
             "tracking": {
               "product_offer_id": "prod_offer_47fam2f02cm5b191knsb8a",
               "src": "organic"
             },
-            "metadata": {
-              "checkout_type": "INFOPRODUCT"
-            },
-            "payment_type": "SUBSCRIPTION",
-            "product_offer_id": "prod_offer_47fam2f02cm5b191knsb8a",
-            "items": [
-              {
-                "amount": 3500,
-                "amount_in_brl": 35,
-                "description": "Aline Cuida Premium (Mensal)",
-                "image_url": "https://zouti-prod-core-media-public.s3.amazonaws.com/media/accounts/acc_hw8mw6qaw7v39ic0dpvcus/products/files/file_6zvd81t2retuae0z3yxjtr_253dbae0-8427-4ba9-9bc8-345ad54a10f0.png",
-                "name": "Aline Cuida Premium (Mensal)",
-                "full_amount": 3500,
-                "full_amount_in_brl": 35,
-                "product_id": "prod_59s6t74zvdqqq017bq2ci2",
-                "quantity": 1,
-                "type": "SKU",
-                "plan_id": "prod_offer_plan_yymbj48gx6dcuhqwq29ad0",
-                "product_offer_id": "prod_offer_47fam2f02cm5b191knsb8a"
-              }
-            ],
-            "customer": {
-              "document": "01702406652",
-              "email": "rhavilirio@gmail.com",
-              "name": "Rhavi da Silva",
-              "phone": "5531999857100"
-            },
-            "payment": {
-              "method": "PIX",
-              "status": "PAID",
-              "interest_amount": 0,
-              "interest_amount_in_brl": 0,
-              "amount": 525,
-              "amount_in_brl": 5.25,
-              "fee": 220,
-              "fee_in_brl": 2.2,
-              "discount_amount": 2975,
-              "discount_amount_in_brl": 29.75,
-              "interest_transfer_amount": 0,
-              "interest_transfer_amount_in_brl": 0,
-              "net_amount": 305,
-              "net_amount_in_brl": 3.05,
-              "installments": 1
-            },
             "utm_data": {
-              "utm_content": "9-89-72"
+              "utm_content": "9-89-560"
             },
-            "navigator": {
-              "ip_address": "201.80.54.181",
-              "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
-              "referer": "",
-              "fbc": "",
-              "fbp": "fb.2.1775251773849.8807315816570349"
-            },
-            "created_at": "2026-05-04T17:50:21.818Z",
-            "updated_at": "2026-05-04T17:50:43.579Z",
-            "amount_in_brl": 5.25,
-            "currency": "BRL",
-            "is_split_payment": false
+            "created_at": "2026-06-11T21:30:41.177Z",
+            "updated_at": "2026-06-11T23:46:56.807Z"
           },
-          "webhookUrl": "https://hook.aisim.cloud/webhook/aline_zouti",
+          "webhookUrl": "https://hook.aisim.cloud/webhook/aline_pagamentos",
           "executionMode": "production"
         },
         "pairedItem": {
@@ -1275,8 +1290,8 @@
       }
     ]
   },
-  "versionId": "a251fd7b-edb4-4a77-8144-1575b076b2ea",
-  "activeVersionId": "a251fd7b-edb4-4a77-8144-1575b076b2ea",
+  "versionId": "66a9d7fa-9027-4c3b-ba94-cd6460119227",
+  "activeVersionId": "66a9d7fa-9027-4c3b-ba94-cd6460119227",
   "triggerCount": 1,
   "shared": [
     {
@@ -1288,9 +1303,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-06-11T13:49:40.595Z",
-    "createdAt": "2026-06-11T13:49:37.138Z",
-    "versionId": "a251fd7b-edb4-4a77-8144-1575b076b2ea",
+    "updatedAt": "2026-06-11T23:51:05.494Z",
+    "createdAt": "2026-06-11T23:50:52.754Z",
+    "versionId": "66a9d7fa-9027-4c3b-ba94-cd6460119227",
     "workflowId": "b5ifbBkBjfJ24cT0",
     "nodes": [
       {
@@ -1435,302 +1450,6 @@
         ],
         "id": "02a68c67-fc6e-4d5a-b27b-e2646b56188d",
         "name": "Switch"
-      },
-      {
-        "parameters": {
-          "conditions": {
-            "options": {
-              "caseSensitive": true,
-              "leftValue": "",
-              "typeValidation": "strict",
-              "version": 2
-            },
-            "conditions": [
-              {
-                "id": "check-paid",
-                "leftValue": "={{ $json.body.status }}",
-                "rightValue": "PAID",
-                "operator": {
-                  "type": "string",
-                  "operation": "equals"
-                }
-              }
-            ],
-            "combinator": "and"
-          },
-          "options": {}
-        },
-        "type": "n8n-nodes-base.filter",
-        "typeVersion": 2.2,
-        "position": [
-          0,
-          0
-        ],
-        "id": "65784b32-f0dc-4a57-ac06-0410882c01c1",
-        "name": "Filter_Status"
-      },
-      {
-        "parameters": {
-          "assignments": {
-            "assignments": [
-              {
-                "id": "set-unique-id",
-                "name": "unique_id",
-                "value": "={{ $json.body.utm_data.utm_content }}",
-                "type": "string"
-              }
-            ]
-          },
-          "options": {}
-        },
-        "type": "n8n-nodes-base.set",
-        "typeVersion": 3.4,
-        "position": [
-          272,
-          0
-        ],
-        "id": "a50d6889-3131-4b96-b204-48d7349a9313",
-        "name": "Set_UniqueID"
-      },
-      {
-        "parameters": {
-          "operation": "executeQuery",
-          "query": "SELECT user_id, custom_attributes, email, account, inbox, conversation, contact FROM users WHERE user_id = '{{ $json.unique_id }}'",
-          "options": {}
-        },
-        "type": "n8n-nodes-base.postgres",
-        "typeVersion": 2.6,
-        "position": [
-          544,
-          0
-        ],
-        "id": "0efaa601-ee04-4d4b-abd5-71a20e600196",
-        "name": "Get_User",
-        "credentials": {
-          "postgres": {
-            "id": "YeIX3GgiXLm97LoO",
-            "name": "DB.NEW-SYSTEM"
-          }
-        }
-      },
-      {
-        "parameters": {
-          "jsCode": "const user = $input.item.json;\nconst attrs = user.custom_attributes;\n\nreturn {\n  json: {\n    unique_id: user.user_id,\n    account_id: user.account,\n    inbox_id: user.inbox,\n    conversation_id: user.conversation,\n    contact_id: user.contact,\n    guardian_name: attrs.guardian_name || '',\n    guardian_email: user.email || attrs.email || '',\n    appointment_child: attrs.appointment_child || '',\n    appointment_date: attrs.appointment_date || '',\n    appointment_end: attrs.appointment_end || ''\n  }\n};"
-        },
-        "type": "n8n-nodes-base.code",
-        "typeVersion": 2,
-        "position": [
-          800,
-          0
-        ],
-        "id": "397a3824-db4d-4d4f-a106-ae66c101995b",
-        "name": "Extract_Data"
-      },
-      {
-        "parameters": {
-          "workflowId": {
-            "__rl": true,
-            "value": "53DQAjgB3PVYf595",
-            "mode": "id"
-          },
-          "workflowInputs": {
-            "mappingMode": "defineBelow",
-            "value": {
-              "request": "criar_evento_confirmado",
-              "unique_id": "={{ $json.unique_id }}",
-              "guardian_name": "={{ $json.guardian_name }}",
-              "child_name": "={{ $json.appointment_child }}",
-              "guardian_email": "={{ $json.guardian_email }}",
-              "appointment_date": "={{ $json.appointment_date }}",
-              "appointment_end": "={{ $json.appointment_end }}"
-            },
-            "matchingColumns": [],
-            "schema": [
-              {
-                "id": "request",
-                "displayName": "request",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "canBeUsedToMatch": true,
-                "type": "string"
-              },
-              {
-                "id": "unique_id",
-                "displayName": "unique_id",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "canBeUsedToMatch": true,
-                "type": "string"
-              },
-              {
-                "id": "guardian_name",
-                "displayName": "guardian_name",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "canBeUsedToMatch": true,
-                "type": "string"
-              },
-              {
-                "id": "child_name",
-                "displayName": "child_name",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "canBeUsedToMatch": true,
-                "type": "string"
-              },
-              {
-                "id": "guardian_email",
-                "displayName": "guardian_email",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "canBeUsedToMatch": true,
-                "type": "string"
-              },
-              {
-                "id": "appointment_date",
-                "displayName": "appointment_date",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "canBeUsedToMatch": true,
-                "type": "string"
-              },
-              {
-                "id": "appointment_end",
-                "displayName": "appointment_end",
-                "required": false,
-                "defaultMatch": false,
-                "display": true,
-                "canBeUsedToMatch": true,
-                "type": "string"
-              }
-            ],
-            "attemptToConvertTypes": false,
-            "convertFieldsToString": true
-          },
-          "options": {
-            "waitForSubWorkflow": true
-          }
-        },
-        "type": "n8n-nodes-base.executeWorkflow",
-        "typeVersion": 1.2,
-        "position": [
-          1040,
-          0
-        ],
-        "id": "2c077543-754b-4466-b410-b1f02708c573",
-        "name": "Criar_Evento_Calendar"
-      },
-      {
-        "parameters": {
-          "operation": "executeQuery",
-          "query": "UPDATE users\nSET custom_attributes = custom_attributes || jsonb_build_object(\n  'consulta_confirmada', true,\n  'consulta_data', '{{ $('Extract_Data').item.json.appointment_date }}',\n  'consulta_crianca', '{{ $('Extract_Data').item.json.appointment_child }}'\n),\nemail = '{{ $('Webhook').item.json.body.customer.email }}',\nupdated_at = NOW()\nWHERE user_id = '{{ $('Extract_Data').item.json.unique_id }}'",
-          "options": {}
-        },
-        "type": "n8n-nodes-base.postgres",
-        "typeVersion": 2.6,
-        "position": [
-          1312,
-          0
-        ],
-        "id": "b0574460-9046-437f-932a-8fbba94a49a2",
-        "name": "Update_User",
-        "credentials": {
-          "postgres": {
-            "id": "YeIX3GgiXLm97LoO",
-            "name": "DB.NEW-SYSTEM"
-          }
-        }
-      },
-      {
-        "parameters": {
-          "mode": "raw",
-          "jsonOutput": "={{ $('Criar_Evento_Calendar').item.json.output }}",
-          "options": {}
-        },
-        "type": "n8n-nodes-base.set",
-        "typeVersion": 3.4,
-        "position": [
-          1568,
-          0
-        ],
-        "id": "672b1f61-999e-48d8-a593-6b5f572f3ba6",
-        "name": "Edit Fields"
-      },
-      {
-        "parameters": {
-          "method": "POST",
-          "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/messages",
-          "sendHeaders": true,
-          "headerParameters": {
-            "parameters": [
-              {
-                "name": "api_access_token",
-                "value": "5t44c4FEyC7caSi9TrJng417"
-              }
-            ]
-          },
-          "sendBody": true,
-          "bodyParameters": {
-            "parameters": [
-              {
-                "name": "content",
-                "value": "=Pagamento confirmado! ✅\n\nA teleconsulta de *{{ $('Extract_Data').item.json.appointment_child }}* está agendada para *{{ DateTime.fromISO($('Extract_Data').item.json.appointment_date).setZone('America/Recife').setLocale('pt-BR').toFormat('cccc, dd/MM/yyyy \\'às\\' HH:mm') }}* com a Dra. Aline Rodrigues.\n\nO convite com o link do Google Meet foi enviado para *{{ $('Extract_Data').item.json.guardian_email }}*.\n\nLINK DA TELECONSULTA: {{ $json.details.meet_link }}\n\nQualquer dúvida até lá, pode me chamar aqui. 😊"
-              },
-              {
-                "name": "message_type",
-                "value": "outgoing"
-              }
-            ]
-          },
-          "options": {}
-        },
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.2,
-        "position": [
-          1824,
-          0
-        ],
-        "id": "0f2ae43c-6d34-4d67-ab76-41176d24b95b",
-        "name": "Enviar_Confirmacao"
-      },
-      {
-        "parameters": {
-          "method": "POST",
-          "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/labels",
-          "sendHeaders": true,
-          "headerParameters": {
-            "parameters": [
-              {
-                "name": "api_access_token",
-                "value": "PArdJisYhtUCfEo9ZurbzxQ9"
-              }
-            ]
-          },
-          "sendBody": true,
-          "bodyParameters": {
-            "parameters": [
-              {
-                "name": "labels",
-                "value": "={{ [\"consulta_agendada\"] }}"
-              }
-            ]
-          },
-          "options": {}
-        },
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.2,
-        "position": [
-          2080,
-          0
-        ],
-        "id": "754fadb9-c59a-4c34-a241-a34313bae190",
-        "name": "Add_Label_Agendada"
       },
       {
         "parameters": {
@@ -2122,7 +1841,7 @@
             "parameters": [
               {
                 "name": "api_access_token",
-                "value": "sNTEed3CPvwoZv88w6e5M7Ly"
+                "value": "5t44c4FEyC7caSi9TrJng417"
               }
             ]
           },
@@ -2149,6 +1868,325 @@
         ],
         "id": "68e6482a-c6d0-4005-9cd9-2bb89ef2c535",
         "name": "Enviar_Cancelamento"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "check-paid",
+                "leftValue": "={{ $json.body.status }}",
+                "rightValue": "PAID",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          0,
+          32
+        ],
+        "id": "9e23b49c-fe8b-4b54-b357-76f45fa4ef1d",
+        "name": "Filter_Status"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "set-unique-id",
+                "name": "unique_id",
+                "value": "={{ $json.body.utm_data.utm_content }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          272,
+          32
+        ],
+        "id": "ac9d0f14-2084-422b-a51d-8bfe2b5c354c",
+        "name": "Set_UniqueID"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT user_id, custom_attributes, email, account, inbox, conversation, contact FROM users WHERE user_id = '{{ $json.unique_id }}'",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          544,
+          32
+        ],
+        "id": "8f63db0b-b946-4ae6-b3fa-92a8453aa30e",
+        "name": "Get_User",
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const user = $input.item.json;\nconst attrs = user.custom_attributes;\n\nreturn {\n  json: {\n    unique_id: user.user_id,\n    account_id: user.account,\n    inbox_id: user.inbox,\n    conversation_id: user.conversation,\n    contact_id: user.contact,\n    guardian_name: attrs.guardian_name || '',\n    guardian_email: user.email || attrs.email || '',\n    appointment_child: attrs.appointment_child || '',\n    appointment_date: attrs.appointment_date || '',\n    appointment_end: attrs.appointment_end || ''\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          800,
+          32
+        ],
+        "id": "f1c1b022-0cfc-4c76-ac69-26eb28c01a13",
+        "name": "Extract_Data"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "53DQAjgB3PVYf595",
+            "mode": "id"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "request": "criar_evento_confirmado",
+              "unique_id": "={{ $json.unique_id }}",
+              "guardian_name": "={{ $json.guardian_name }}",
+              "child_name": "={{ $json.appointment_child }}",
+              "guardian_email": "={{ $json.guardian_email }}",
+              "appointment_date": "={{ $json.appointment_date }}",
+              "appointment_end": "={{ $json.appointment_end }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "request",
+                "displayName": "request",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "unique_id",
+                "displayName": "unique_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "guardian_name",
+                "displayName": "guardian_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "child_name",
+                "displayName": "child_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "guardian_email",
+                "displayName": "guardian_email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "appointment_date",
+                "displayName": "appointment_date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "appointment_end",
+                "displayName": "appointment_end",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          1040,
+          32
+        ],
+        "id": "b540c4b9-6b79-4eec-a5cf-0608d6371ece",
+        "name": "Criar_Evento_Calendar"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE users\nSET custom_attributes = custom_attributes || jsonb_build_object(\n  'consulta_confirmada', true,\n  'consulta_data', '{{ $('Extract_Data').item.json.appointment_date }}',\n  'consulta_crianca', '{{ $('Extract_Data').item.json.appointment_child }}'\n),\nactual_stage = 2,\nemail = '{{ $('Webhook').item.json.body.customer.email }}',\nupdated_at = NOW()\nWHERE user_id = '{{ $('Extract_Data').item.json.unique_id }}'",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1312,
+          32
+        ],
+        "id": "418e5273-b6b6-46bd-b406-20cde842b884",
+        "name": "Update_User",
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "={{ $('Criar_Evento_Calendar').item.json.output }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1568,
+          32
+        ],
+        "id": "49e5b152-e68b-4fef-9747-88a43b4b5280",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "5t44c4FEyC7caSi9TrJng417"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "content",
+                "value": "=Pagamento confirmado! ✅\n\nA teleconsulta de *{{ $('Extract_Data').item.json.appointment_child }}* está agendada para *{{ DateTime.fromISO($('Extract_Data').item.json.appointment_date).setZone('America/Recife').setLocale('pt-BR').toFormat('cccc, dd/MM/yyyy \\'às\\' HH:mm') }}* com a Dra. Aline Rodrigues.\n\nO convite com o link do Google Meet foi enviado para *{{ $('Extract_Data').item.json.guardian_email }}*.\n\nLINK DA TELECONSULTA: {{ $json.details.meet_link }}\n\nQualquer dúvida até lá, pode me chamar aqui. 😊"
+              },
+              {
+                "name": "message_type",
+                "value": "outgoing"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1824,
+          32
+        ],
+        "id": "43239edd-0c4a-4eb0-a142-d656c9731d4b",
+        "name": "Enviar_Confirmacao"
+      },
+      {
+        "parameters": {
+          "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/labels",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "PArdJisYhtUCfEo9ZurbzxQ9"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2080,
+          32
+        ],
+        "id": "6c85ea3d-703a-4cae-bc60-d8398b676be6",
+        "name": "Get_Labels"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/labels",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "PArdJisYhtUCfEo9ZurbzxQ9"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "labels",
+                "value": "={{ [...new Set([...($('Get_Labels').item.json.payload || []).filter(l => l !== 'agendamento'), 'consulta_agendada'])] }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2336,
+          32
+        ],
+        "id": "f2d86694-5908-41fb-ba93-f29f5fdea1d0",
+        "name": "Add_Label_Agendada"
       }
     ],
     "connections": {
@@ -2196,94 +2234,6 @@
           [
             {
               "node": "Set_UniqueID_Cancel",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Filter_Status": {
-        "main": [
-          [
-            {
-              "node": "Set_UniqueID",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Set_UniqueID": {
-        "main": [
-          [
-            {
-              "node": "Get_User",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Get_User": {
-        "main": [
-          [
-            {
-              "node": "Extract_Data",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Extract_Data": {
-        "main": [
-          [
-            {
-              "node": "Criar_Evento_Calendar",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Criar_Evento_Calendar": {
-        "main": [
-          [
-            {
-              "node": "Update_User",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Update_User": {
-        "main": [
-          [
-            {
-              "node": "Edit Fields",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Edit Fields": {
-        "main": [
-          [
-            {
-              "node": "Enviar_Confirmacao",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Enviar_Confirmacao": {
-        "main": [
-          [
-            {
-              "node": "Add_Label_Agendada",
               "type": "main",
               "index": 0
             }
@@ -2428,10 +2378,109 @@
             }
           ]
         ]
+      },
+      "Filter_Status": {
+        "main": [
+          [
+            {
+              "node": "Set_UniqueID",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set_UniqueID": {
+        "main": [
+          [
+            {
+              "node": "Get_User",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_User": {
+        "main": [
+          [
+            {
+              "node": "Extract_Data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract_Data": {
+        "main": [
+          [
+            {
+              "node": "Criar_Evento_Calendar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar_Evento_Calendar": {
+        "main": [
+          [
+            {
+              "node": "Update_User",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update_User": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Enviar_Confirmacao",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar_Confirmacao": {
+        "main": [
+          [
+            {
+              "node": "Get_Labels",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_Labels": {
+        "main": [
+          [
+            {
+              "node": "Add_Label_Agendada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "System AI SIM",
-    "name": "Version a251fd7b",
+    "name": "Version 66a9d7fa",
     "description": "",
     "autosaved": true
   },
