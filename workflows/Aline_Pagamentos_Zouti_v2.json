@@ -1,0 +1,2395 @@
+{
+  "updatedAt": "2026-06-13T03:53:41.183Z",
+  "createdAt": "2026-05-18T13:08:01.275Z",
+  "id": "b5ifbBkBjfJ24cT0",
+  "name": "Aline · Pagamentos (Zouti) v2",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "aline_pagamentos",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -704,
+        272
+      ],
+      "id": "ff3b9b99-e5dd-4a08-b72a-a95ff56a43a9",
+      "name": "Webhook",
+      "webhookId": "404831a6-fb41-46cd-8399-610cd5c97b46"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "check-teleconsulta",
+                    "leftValue": "prod_weijprth1gdzdrxa1t2bpe",
+                    "rightValue": "={{ $json.body.items[0].product_id }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "check-plano-mensal",
+                    "leftValue": "prod_offer_47fam2f02cm5b191knsb8a",
+                    "rightValue": "={{ $json.body.product_offer_id }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "check-plano-anual",
+                    "leftValue": "prod_offer_2hrld57gg1t3jcjapk53h8",
+                    "rightValue": "={{ $json.body.product_offer_id }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "check-renewed",
+                    "leftValue": "={{ $json.headers['x-zouti-event-type'] }}",
+                    "rightValue": "SUBSCRIPTION_RENEWED",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "check-canceled",
+                    "leftValue": "={{ $json.headers['x-zouti-event-type'] }}",
+                    "rightValue": "SUBSCRIPTION_CANCELED",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -496,
+        224
+      ],
+      "id": "02a68c67-fc6e-4d5a-b27b-e2646b56188d",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "check-paid-plano",
+              "leftValue": "={{ $json.body.status }}",
+              "rightValue": "PAID",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        272
+      ],
+      "id": "fb3a99aa-5ed8-43d7-8fa5-cf5357f6992b",
+      "name": "Filter_Status_Plano"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "set-unique-id-plano",
+              "name": "unique_id",
+              "value": "={{ $json.body.utm_data.utm_content }}",
+              "type": "string"
+            },
+            {
+              "id": "set-plan-offer-id",
+              "name": "plan_offer_id",
+              "value": "={{ $json.body.product_offer_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        272,
+        272
+      ],
+      "id": "75f2242d-31af-4f06-a2f8-00c8b4d36d1f",
+      "name": "Set_UniqueID_Plano"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT user_id, subscription, actual_stage, account, inbox, conversation, contact FROM users WHERE user_id = '{{ $json.unique_id }}'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        544,
+        272
+      ],
+      "id": "9b729d5b-9869-4a4c-ad85-10eaf6709893",
+      "name": "Get_User_Plano",
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const user = $input.item.json;\n\nreturn {\n  json: {\n    unique_id: user.user_id,\n    account_id: user.account,\n    inbox_id: user.inbox,\n    conversation_id: user.conversation,\n    contact_id: user.contact,\n    plan_offer_id: $('Set_UniqueID_Plano').item.json.plan_offer_id\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        272
+      ],
+      "id": "ca71d861-92e2-43c8-b423-d5fb6f524e96",
+      "name": "Extract_Data_Plano"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "check-mensal",
+              "leftValue": "={{ $json.plan_offer_id }}",
+              "rightValue": "prod_offer_47fam2f02cm5b191knsb8a",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        272
+      ],
+      "id": "8744e500-c3ad-48d7-b0ed-2735de3a37ac",
+      "name": "IF_Tipo_Plano"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_type',   'mensal',\n    'daily_limit', 99999,\n    'plan_start',  NOW()::text,\n    'plan_expires',(NOW() + INTERVAL '30 days')::text\n  ),\n  actual_stage = 2,\n  email = '{{ $('Webhook').item.json.body.customer.email }}',\n  updated_at = NOW()\nWHERE user_id = '{{ $json.unique_id }}'\nRETURNING user_id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1312,
+        256
+      ],
+      "id": "642e4757-6659-4a9d-9d1f-cefda7ee0788",
+      "name": "Activate_Mensal",
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_type',   'anual',\n    'daily_limit', 99999,\n    'plan_start',  NOW()::text,\n    'plan_expires',(NOW() + INTERVAL '365 days')::text\n  ),\n  actual_stage = 2,\n  email = '{{ $('Webhook').item.json.body.customer.email }}',\n  updated_at = NOW()\nWHERE user_id = '{{ $json.unique_id }}'\nRETURNING user_id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1312,
+        496
+      ],
+      "id": "7fcc8663-1c68-495b-af91-d7f34b811e7b",
+      "name": "Activate_Anual",
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data_Plano').item.json.account_id }}/conversations/{{ $('Extract_Data_Plano').item.json.conversation_id }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "5t44c4FEyC7caSi9TrJng417"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "Tudo certo! ✅\n\nSeu plano *Premium Mensal* está ativo agora.\n\nA partir deste momento você tem acesso ilimitado à Aline Cuida — sem limite de mensagens.\n\nPode continuar a conversa normalmente! 😊"
+            },
+            {
+              "name": "message_type",
+              "value": "outgoing"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1568,
+        256
+      ],
+      "id": "95651de1-e1e8-4c65-b3c5-23939c5f3e1d",
+      "name": "Enviar_Confirmacao_Mensal"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data_Plano').item.json.account_id }}/conversations/{{ $('Extract_Data_Plano').item.json.conversation_id }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "5t44c4FEyC7caSi9TrJng417"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "Tudo certo! ✅\n\nSeu plano *Premium Anual* está ativo agora.\n\nA partir deste momento você tem acesso ilimitado à Aline Cuida — sem limite de mensagens pelo próximo ano.\n\nPode continuar a conversa normalmente! 😊"
+            },
+            {
+              "name": "message_type",
+              "value": "outgoing"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1568,
+        496
+      ],
+      "id": "f6031aa4-cb6e-4945-817d-2ba9e47c801d",
+      "name": "Enviar_Confirmacao_Anual"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "set-unique-id-renewal",
+              "name": "unique_id",
+              "value": "={{ $json.body.utm_data.utm_content }}",
+              "type": "string"
+            },
+            {
+              "id": "set-plan-interval",
+              "name": "plan_interval",
+              "value": "={{ $json.body.plan.interval }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        528
+      ],
+      "id": "e7f59112-c67b-4efd-9ace-fd1ce0419cef",
+      "name": "Set_UniqueID_Renewal"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT user_id, account, inbox, conversation FROM users WHERE user_id = '{{ $json.unique_id }}'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        272,
+        528
+      ],
+      "id": "4ab4e8e9-e06b-4c51-8e00-dc4249782ed9",
+      "name": "Get_User_Renewal",
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_expires', CASE\n      WHEN '{{ $('Set_UniqueID_Renewal').item.json.plan_interval }}' = 'YEARLY'\n      THEN (NOW() + INTERVAL '365 days')::text\n      ELSE (NOW() + INTERVAL '30 days')::text\n    END\n  ),\n  updated_at = NOW()\nWHERE user_id = '{{ $json.user_id }}'\nRETURNING user_id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        544,
+        528
+      ],
+      "id": "3850080e-000e-4d00-b52a-5cd7fc1fc955",
+      "name": "Update_Renewal",
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "set-unique-id-cancel",
+              "name": "unique_id",
+              "value": "={{ $json.body.utm_data.utm_content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        800
+      ],
+      "id": "1d61a3b8-258b-43fe-bf84-8382f7bfc9b0",
+      "name": "Set_UniqueID_Cancel"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT user_id, account, inbox, conversation FROM users WHERE user_id = '{{ $json.unique_id }}'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        272,
+        800
+      ],
+      "id": "a8e7badd-cb6a-4523-a0ac-0fee4b7cab04",
+      "name": "Get_User_Cancel",
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_type',   'gratuito',\n    'daily_limit', 8,\n    'plan_expires', NOW()::text\n  ),\n  updated_at = NOW()\nWHERE user_id = '{{ $json.user_id }}'\nRETURNING user_id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        544,
+        800
+      ],
+      "id": "8b7be07c-36f5-40cc-8cfe-3e44d3eb41fd",
+      "name": "Update_Cancel",
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Get_User_Cancel').item.json.account }}/conversations/{{ $('Get_User_Cancel').item.json.conversation }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "5t44c4FEyC7caSi9TrJng417"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "Sua assinatura Premium foi cancelada.\n\nVocê voltou ao plano gratuito, com limite de 50 mensagens por mês.\n\nSe quiser reativar o Premium a qualquer momento, é só me chamar! 😊"
+            },
+            {
+              "name": "message_type",
+              "value": "outgoing"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        800,
+        800
+      ],
+      "id": "68e6482a-c6d0-4005-9cd9-2bb89ef2c535",
+      "name": "Enviar_Cancelamento"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "check-paid",
+              "leftValue": "={{ $json.body.status }}",
+              "rightValue": "PAID",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        32
+      ],
+      "id": "9e23b49c-fe8b-4b54-b357-76f45fa4ef1d",
+      "name": "Filter_Status"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "set-unique-id",
+              "name": "unique_id",
+              "value": "={{ $json.body.utm_data.utm_content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        272,
+        32
+      ],
+      "id": "ac9d0f14-2084-422b-a51d-8bfe2b5c354c",
+      "name": "Set_UniqueID"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT user_id, custom_attributes, email, account, inbox, conversation, contact FROM users WHERE user_id = '{{ $json.unique_id }}'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        544,
+        32
+      ],
+      "id": "8f63db0b-b946-4ae6-b3fa-92a8453aa30e",
+      "name": "Get_User",
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const user = $input.item.json;\nconst attrs = user.custom_attributes;\n\nreturn {\n  json: {\n    unique_id: user.user_id,\n    account_id: user.account,\n    inbox_id: user.inbox,\n    conversation_id: user.conversation,\n    contact_id: user.contact,\n    guardian_name: attrs.guardian_name || '',\n    guardian_email: user.email || attrs.email || '',\n    appointment_child: attrs.appointment_child || '',\n    appointment_date: attrs.appointment_date || '',\n    appointment_end: attrs.appointment_end || ''\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        32
+      ],
+      "id": "f1c1b022-0cfc-4c76-ac69-26eb28c01a13",
+      "name": "Extract_Data"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "53DQAjgB3PVYf595",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "request": "criar_evento_confirmado",
+            "unique_id": "={{ $json.unique_id }}",
+            "guardian_name": "={{ $json.guardian_name }}",
+            "child_name": "={{ $json.appointment_child }}",
+            "guardian_email": "={{ $json.guardian_email }}",
+            "appointment_date": "={{ $json.appointment_date }}",
+            "appointment_end": "={{ $json.appointment_end }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "request",
+              "displayName": "request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "unique_id",
+              "displayName": "unique_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "guardian_name",
+              "displayName": "guardian_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "child_name",
+              "displayName": "child_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "guardian_email",
+              "displayName": "guardian_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "appointment_date",
+              "displayName": "appointment_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "appointment_end",
+              "displayName": "appointment_end",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1040,
+        32
+      ],
+      "id": "b540c4b9-6b79-4eec-a5cf-0608d6371ece",
+      "name": "Criar_Evento_Calendar"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE users\nSET custom_attributes = custom_attributes || jsonb_build_object(\n  'consulta_confirmada', true,\n  'consulta_data', '{{ $('Extract_Data').item.json.appointment_date }}',\n  'consulta_crianca', '{{ $('Extract_Data').item.json.appointment_child }}'\n),\nactual_stage = 2,\nemail = '{{ $('Webhook').item.json.body.customer.email }}',\nupdated_at = NOW()\nWHERE user_id = '{{ $('Extract_Data').item.json.unique_id }}'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1312,
+        32
+      ],
+      "id": "418e5273-b6b6-46bd-b406-20cde842b884",
+      "name": "Update_User",
+      "credentials": {
+        "postgres": {
+          "id": "YeIX3GgiXLm97LoO",
+          "name": "DB.NEW-SYSTEM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $('Criar_Evento_Calendar').item.json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1568,
+        32
+      ],
+      "id": "49e5b152-e68b-4fef-9747-88a43b4b5280",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "5t44c4FEyC7caSi9TrJng417"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "=Pagamento confirmado! ✅\n\nA teleconsulta de *{{ $('Extract_Data').item.json.appointment_child }}* está agendada para *{{ DateTime.fromISO($('Extract_Data').item.json.appointment_date).setZone('America/Recife').setLocale('pt-BR').toFormat('cccc, dd/MM/yyyy \\'às\\' HH:mm') }}* com a Dra. Aline Rodrigues.\n\nO convite com o link do Google Meet foi enviado para *{{ $('Extract_Data').item.json.guardian_email }}*.\n\nLINK DA TELECONSULTA: {{ $json.details.meet_link }}\n\nQualquer dúvida até lá, pode me chamar aqui. 😊"
+            },
+            {
+              "name": "message_type",
+              "value": "outgoing"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1824,
+        32
+      ],
+      "id": "43239edd-0c4a-4eb0-a142-d656c9731d4b",
+      "name": "Enviar_Confirmacao"
+    },
+    {
+      "parameters": {
+        "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/labels",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "PArdJisYhtUCfEo9ZurbzxQ9"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2080,
+        32
+      ],
+      "id": "6c85ea3d-703a-4cae-bc60-d8398b676be6",
+      "name": "Get_Labels"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/labels",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "PArdJisYhtUCfEo9ZurbzxQ9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "labels",
+              "value": "={{ [...new Set([...($('Get_Labels').item.json.payload || []).filter(l => l !== 'agendamento'), 'consulta_agendada'])] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2336,
+        32
+      ],
+      "id": "f2d86694-5908-41fb-ba93-f29f5fdea1d0",
+      "name": "Add_Label_Agendada"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Filter_Status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Filter_Status_Plano",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Filter_Status_Plano",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set_UniqueID_Renewal",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set_UniqueID_Cancel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter_Status_Plano": {
+      "main": [
+        [
+          {
+            "node": "Set_UniqueID_Plano",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_UniqueID_Plano": {
+      "main": [
+        [
+          {
+            "node": "Get_User_Plano",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_User_Plano": {
+      "main": [
+        [
+          {
+            "node": "Extract_Data_Plano",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract_Data_Plano": {
+      "main": [
+        [
+          {
+            "node": "IF_Tipo_Plano",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_Tipo_Plano": {
+      "main": [
+        [
+          {
+            "node": "Activate_Mensal",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Activate_Anual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Activate_Mensal": {
+      "main": [
+        [
+          {
+            "node": "Enviar_Confirmacao_Mensal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Activate_Anual": {
+      "main": [
+        [
+          {
+            "node": "Enviar_Confirmacao_Anual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_UniqueID_Renewal": {
+      "main": [
+        [
+          {
+            "node": "Get_User_Renewal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_User_Renewal": {
+      "main": [
+        [
+          {
+            "node": "Update_Renewal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_UniqueID_Cancel": {
+      "main": [
+        [
+          {
+            "node": "Get_User_Cancel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_User_Cancel": {
+      "main": [
+        [
+          {
+            "node": "Update_Cancel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update_Cancel": {
+      "main": [
+        [
+          {
+            "node": "Enviar_Cancelamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter_Status": {
+      "main": [
+        [
+          {
+            "node": "Set_UniqueID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_UniqueID": {
+      "main": [
+        [
+          {
+            "node": "Get_User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_User": {
+      "main": [
+        [
+          {
+            "node": "Extract_Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract_Data": {
+      "main": [
+        [
+          {
+            "node": "Criar_Evento_Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar_Evento_Calendar": {
+      "main": [
+        [
+          {
+            "node": "Update_User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update_User": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Enviar_Confirmacao",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar_Confirmacao": {
+      "main": [
+        [
+          {
+            "node": "Get_Labels",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Labels": {
+      "main": [
+        [
+          {
+            "node": "Add_Label_Agendada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "TaLOAW8gj0JIGTwW",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "59bd0208-1740-4041-a39e-46ee87d1c5a6",
+  "activeVersionId": "66a9d7fa-9027-4c3b-ba94-cd6460119227",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-18T13:08:01.275Z",
+      "createdAt": "2026-05-18T13:08:01.275Z",
+      "role": "workflow:owner",
+      "workflowId": "b5ifbBkBjfJ24cT0",
+      "projectId": "biUQguab5U7Obw0N"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-06-11T23:51:05.494Z",
+    "createdAt": "2026-06-11T23:50:52.754Z",
+    "versionId": "66a9d7fa-9027-4c3b-ba94-cd6460119227",
+    "workflowId": "b5ifbBkBjfJ24cT0",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "aline_pagamentos",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -704,
+          272
+        ],
+        "id": "ff3b9b99-e5dd-4a08-b72a-a95ff56a43a9",
+        "name": "Webhook",
+        "webhookId": "404831a6-fb41-46cd-8399-610cd5c97b46"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "id": "check-teleconsulta",
+                      "leftValue": "prod_weijprth1gdzdrxa1t2bpe",
+                      "rightValue": "={{ $json.body.items[0].product_id }}",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "id": "check-plano-mensal",
+                      "leftValue": "prod_offer_47fam2f02cm5b191knsb8a",
+                      "rightValue": "={{ $json.body.product_offer_id }}",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "id": "check-plano-anual",
+                      "leftValue": "prod_offer_2hrld57gg1t3jcjapk53h8",
+                      "rightValue": "={{ $json.body.product_offer_id }}",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "id": "check-renewed",
+                      "leftValue": "={{ $json.headers['x-zouti-event-type'] }}",
+                      "rightValue": "SUBSCRIPTION_RENEWED",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
+                  },
+                  "conditions": [
+                    {
+                      "id": "check-canceled",
+                      "leftValue": "={{ $json.headers['x-zouti-event-type'] }}",
+                      "rightValue": "SUBSCRIPTION_CANCELED",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.4,
+        "position": [
+          -496,
+          224
+        ],
+        "id": "02a68c67-fc6e-4d5a-b27b-e2646b56188d",
+        "name": "Switch"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "check-paid-plano",
+                "leftValue": "={{ $json.body.status }}",
+                "rightValue": "PAID",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          0,
+          272
+        ],
+        "id": "fb3a99aa-5ed8-43d7-8fa5-cf5357f6992b",
+        "name": "Filter_Status_Plano"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "set-unique-id-plano",
+                "name": "unique_id",
+                "value": "={{ $json.body.utm_data.utm_content }}",
+                "type": "string"
+              },
+              {
+                "id": "set-plan-offer-id",
+                "name": "plan_offer_id",
+                "value": "={{ $json.body.product_offer_id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          272,
+          272
+        ],
+        "id": "75f2242d-31af-4f06-a2f8-00c8b4d36d1f",
+        "name": "Set_UniqueID_Plano"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT user_id, subscription, actual_stage, account, inbox, conversation, contact FROM users WHERE user_id = '{{ $json.unique_id }}'",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          544,
+          272
+        ],
+        "id": "9b729d5b-9869-4a4c-ad85-10eaf6709893",
+        "name": "Get_User_Plano",
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const user = $input.item.json;\n\nreturn {\n  json: {\n    unique_id: user.user_id,\n    account_id: user.account,\n    inbox_id: user.inbox,\n    conversation_id: user.conversation,\n    contact_id: user.contact,\n    plan_offer_id: $('Set_UniqueID_Plano').item.json.plan_offer_id\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          800,
+          272
+        ],
+        "id": "ca71d861-92e2-43c8-b423-d5fb6f524e96",
+        "name": "Extract_Data_Plano"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "check-mensal",
+                "leftValue": "={{ $json.plan_offer_id }}",
+                "rightValue": "prod_offer_47fam2f02cm5b191knsb8a",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          1040,
+          272
+        ],
+        "id": "8744e500-c3ad-48d7-b0ed-2735de3a37ac",
+        "name": "IF_Tipo_Plano"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_type',   'mensal',\n    'daily_limit', 99999,\n    'plan_start',  NOW()::text,\n    'plan_expires',(NOW() + INTERVAL '30 days')::text\n  ),\n  actual_stage = 2,\n  email = '{{ $('Webhook').item.json.body.customer.email }}',\n  updated_at = NOW()\nWHERE user_id = '{{ $json.unique_id }}'\nRETURNING user_id",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1312,
+          256
+        ],
+        "id": "642e4757-6659-4a9d-9d1f-cefda7ee0788",
+        "name": "Activate_Mensal",
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_type',   'anual',\n    'daily_limit', 99999,\n    'plan_start',  NOW()::text,\n    'plan_expires',(NOW() + INTERVAL '365 days')::text\n  ),\n  actual_stage = 2,\n  email = '{{ $('Webhook').item.json.body.customer.email }}',\n  updated_at = NOW()\nWHERE user_id = '{{ $json.unique_id }}'\nRETURNING user_id",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1312,
+          496
+        ],
+        "id": "7fcc8663-1c68-495b-af91-d7f34b811e7b",
+        "name": "Activate_Anual",
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data_Plano').item.json.account_id }}/conversations/{{ $('Extract_Data_Plano').item.json.conversation_id }}/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "5t44c4FEyC7caSi9TrJng417"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "content",
+                "value": "Tudo certo! ✅\n\nSeu plano *Premium Mensal* está ativo agora.\n\nA partir deste momento você tem acesso ilimitado à Aline Cuida — sem limite de mensagens.\n\nPode continuar a conversa normalmente! 😊"
+              },
+              {
+                "name": "message_type",
+                "value": "outgoing"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1568,
+          256
+        ],
+        "id": "95651de1-e1e8-4c65-b3c5-23939c5f3e1d",
+        "name": "Enviar_Confirmacao_Mensal"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data_Plano').item.json.account_id }}/conversations/{{ $('Extract_Data_Plano').item.json.conversation_id }}/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "5t44c4FEyC7caSi9TrJng417"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "content",
+                "value": "Tudo certo! ✅\n\nSeu plano *Premium Anual* está ativo agora.\n\nA partir deste momento você tem acesso ilimitado à Aline Cuida — sem limite de mensagens pelo próximo ano.\n\nPode continuar a conversa normalmente! 😊"
+              },
+              {
+                "name": "message_type",
+                "value": "outgoing"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1568,
+          496
+        ],
+        "id": "f6031aa4-cb6e-4945-817d-2ba9e47c801d",
+        "name": "Enviar_Confirmacao_Anual"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "set-unique-id-renewal",
+                "name": "unique_id",
+                "value": "={{ $json.body.utm_data.utm_content }}",
+                "type": "string"
+              },
+              {
+                "id": "set-plan-interval",
+                "name": "plan_interval",
+                "value": "={{ $json.body.plan.interval }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          0,
+          528
+        ],
+        "id": "e7f59112-c67b-4efd-9ace-fd1ce0419cef",
+        "name": "Set_UniqueID_Renewal"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT user_id, account, inbox, conversation FROM users WHERE user_id = '{{ $json.unique_id }}'",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          272,
+          528
+        ],
+        "id": "4ab4e8e9-e06b-4c51-8e00-dc4249782ed9",
+        "name": "Get_User_Renewal",
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_expires', CASE\n      WHEN '{{ $('Set_UniqueID_Renewal').item.json.plan_interval }}' = 'YEARLY'\n      THEN (NOW() + INTERVAL '365 days')::text\n      ELSE (NOW() + INTERVAL '30 days')::text\n    END\n  ),\n  updated_at = NOW()\nWHERE user_id = '{{ $json.user_id }}'\nRETURNING user_id",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          544,
+          528
+        ],
+        "id": "3850080e-000e-4d00-b52a-5cd7fc1fc955",
+        "name": "Update_Renewal",
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "set-unique-id-cancel",
+                "name": "unique_id",
+                "value": "={{ $json.body.utm_data.utm_content }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          0,
+          800
+        ],
+        "id": "1d61a3b8-258b-43fe-bf84-8382f7bfc9b0",
+        "name": "Set_UniqueID_Cancel"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT user_id, account, inbox, conversation FROM users WHERE user_id = '{{ $json.unique_id }}'",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          272,
+          800
+        ],
+        "id": "a8e7badd-cb6a-4523-a0ac-0fee4b7cab04",
+        "name": "Get_User_Cancel",
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE users\nSET\n  subscription = subscription || jsonb_build_object(\n    'plan_type',   'gratuito',\n    'daily_limit', 8,\n    'plan_expires', NOW()::text\n  ),\n  updated_at = NOW()\nWHERE user_id = '{{ $json.user_id }}'\nRETURNING user_id",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          544,
+          800
+        ],
+        "id": "8b7be07c-36f5-40cc-8cfe-3e44d3eb41fd",
+        "name": "Update_Cancel",
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Get_User_Cancel').item.json.account }}/conversations/{{ $('Get_User_Cancel').item.json.conversation }}/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "5t44c4FEyC7caSi9TrJng417"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "content",
+                "value": "Sua assinatura Premium foi cancelada.\n\nVocê voltou ao plano gratuito, com limite de 50 mensagens por mês.\n\nSe quiser reativar o Premium a qualquer momento, é só me chamar! 😊"
+              },
+              {
+                "name": "message_type",
+                "value": "outgoing"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          800,
+          800
+        ],
+        "id": "68e6482a-c6d0-4005-9cd9-2bb89ef2c535",
+        "name": "Enviar_Cancelamento"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "check-paid",
+                "leftValue": "={{ $json.body.status }}",
+                "rightValue": "PAID",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          0,
+          32
+        ],
+        "id": "9e23b49c-fe8b-4b54-b357-76f45fa4ef1d",
+        "name": "Filter_Status"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "set-unique-id",
+                "name": "unique_id",
+                "value": "={{ $json.body.utm_data.utm_content }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          272,
+          32
+        ],
+        "id": "ac9d0f14-2084-422b-a51d-8bfe2b5c354c",
+        "name": "Set_UniqueID"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT user_id, custom_attributes, email, account, inbox, conversation, contact FROM users WHERE user_id = '{{ $json.unique_id }}'",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          544,
+          32
+        ],
+        "id": "8f63db0b-b946-4ae6-b3fa-92a8453aa30e",
+        "name": "Get_User",
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const user = $input.item.json;\nconst attrs = user.custom_attributes;\n\nreturn {\n  json: {\n    unique_id: user.user_id,\n    account_id: user.account,\n    inbox_id: user.inbox,\n    conversation_id: user.conversation,\n    contact_id: user.contact,\n    guardian_name: attrs.guardian_name || '',\n    guardian_email: user.email || attrs.email || '',\n    appointment_child: attrs.appointment_child || '',\n    appointment_date: attrs.appointment_date || '',\n    appointment_end: attrs.appointment_end || ''\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          800,
+          32
+        ],
+        "id": "f1c1b022-0cfc-4c76-ac69-26eb28c01a13",
+        "name": "Extract_Data"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "53DQAjgB3PVYf595",
+            "mode": "id"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "request": "criar_evento_confirmado",
+              "unique_id": "={{ $json.unique_id }}",
+              "guardian_name": "={{ $json.guardian_name }}",
+              "child_name": "={{ $json.appointment_child }}",
+              "guardian_email": "={{ $json.guardian_email }}",
+              "appointment_date": "={{ $json.appointment_date }}",
+              "appointment_end": "={{ $json.appointment_end }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "request",
+                "displayName": "request",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "unique_id",
+                "displayName": "unique_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "guardian_name",
+                "displayName": "guardian_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "child_name",
+                "displayName": "child_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "guardian_email",
+                "displayName": "guardian_email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "appointment_date",
+                "displayName": "appointment_date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "appointment_end",
+                "displayName": "appointment_end",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          1040,
+          32
+        ],
+        "id": "b540c4b9-6b79-4eec-a5cf-0608d6371ece",
+        "name": "Criar_Evento_Calendar"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE users\nSET custom_attributes = custom_attributes || jsonb_build_object(\n  'consulta_confirmada', true,\n  'consulta_data', '{{ $('Extract_Data').item.json.appointment_date }}',\n  'consulta_crianca', '{{ $('Extract_Data').item.json.appointment_child }}'\n),\nactual_stage = 2,\nemail = '{{ $('Webhook').item.json.body.customer.email }}',\nupdated_at = NOW()\nWHERE user_id = '{{ $('Extract_Data').item.json.unique_id }}'",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1312,
+          32
+        ],
+        "id": "418e5273-b6b6-46bd-b406-20cde842b884",
+        "name": "Update_User",
+        "credentials": {
+          "postgres": {
+            "id": "YeIX3GgiXLm97LoO",
+            "name": "DB.NEW-SYSTEM"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "={{ $('Criar_Evento_Calendar').item.json.output }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1568,
+          32
+        ],
+        "id": "49e5b152-e68b-4fef-9747-88a43b4b5280",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "5t44c4FEyC7caSi9TrJng417"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "content",
+                "value": "=Pagamento confirmado! ✅\n\nA teleconsulta de *{{ $('Extract_Data').item.json.appointment_child }}* está agendada para *{{ DateTime.fromISO($('Extract_Data').item.json.appointment_date).setZone('America/Recife').setLocale('pt-BR').toFormat('cccc, dd/MM/yyyy \\'às\\' HH:mm') }}* com a Dra. Aline Rodrigues.\n\nO convite com o link do Google Meet foi enviado para *{{ $('Extract_Data').item.json.guardian_email }}*.\n\nLINK DA TELECONSULTA: {{ $json.details.meet_link }}\n\nQualquer dúvida até lá, pode me chamar aqui. 😊"
+              },
+              {
+                "name": "message_type",
+                "value": "outgoing"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1824,
+          32
+        ],
+        "id": "43239edd-0c4a-4eb0-a142-d656c9731d4b",
+        "name": "Enviar_Confirmacao"
+      },
+      {
+        "parameters": {
+          "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/labels",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "PArdJisYhtUCfEo9ZurbzxQ9"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2080,
+          32
+        ],
+        "id": "6c85ea3d-703a-4cae-bc60-d8398b676be6",
+        "name": "Get_Labels"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://app.cria.chat/api/v1/accounts/{{ $('Extract_Data').item.json.account_id }}/conversations/{{ $('Extract_Data').item.json.conversation_id }}/labels",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "api_access_token",
+                "value": "PArdJisYhtUCfEo9ZurbzxQ9"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "labels",
+                "value": "={{ [...new Set([...($('Get_Labels').item.json.payload || []).filter(l => l !== 'agendamento'), 'consulta_agendada'])] }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2336,
+          32
+        ],
+        "id": "f2d86694-5908-41fb-ba93-f29f5fdea1d0",
+        "name": "Add_Label_Agendada"
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Filter_Status",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Filter_Status_Plano",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Filter_Status_Plano",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Set_UniqueID_Renewal",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Set_UniqueID_Cancel",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter_Status_Plano": {
+        "main": [
+          [
+            {
+              "node": "Set_UniqueID_Plano",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set_UniqueID_Plano": {
+        "main": [
+          [
+            {
+              "node": "Get_User_Plano",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_User_Plano": {
+        "main": [
+          [
+            {
+              "node": "Extract_Data_Plano",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract_Data_Plano": {
+        "main": [
+          [
+            {
+              "node": "IF_Tipo_Plano",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF_Tipo_Plano": {
+        "main": [
+          [
+            {
+              "node": "Activate_Mensal",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Activate_Anual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Activate_Mensal": {
+        "main": [
+          [
+            {
+              "node": "Enviar_Confirmacao_Mensal",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Activate_Anual": {
+        "main": [
+          [
+            {
+              "node": "Enviar_Confirmacao_Anual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set_UniqueID_Renewal": {
+        "main": [
+          [
+            {
+              "node": "Get_User_Renewal",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_User_Renewal": {
+        "main": [
+          [
+            {
+              "node": "Update_Renewal",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set_UniqueID_Cancel": {
+        "main": [
+          [
+            {
+              "node": "Get_User_Cancel",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_User_Cancel": {
+        "main": [
+          [
+            {
+              "node": "Update_Cancel",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update_Cancel": {
+        "main": [
+          [
+            {
+              "node": "Enviar_Cancelamento",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter_Status": {
+        "main": [
+          [
+            {
+              "node": "Set_UniqueID",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set_UniqueID": {
+        "main": [
+          [
+            {
+              "node": "Get_User",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_User": {
+        "main": [
+          [
+            {
+              "node": "Extract_Data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract_Data": {
+        "main": [
+          [
+            {
+              "node": "Criar_Evento_Calendar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Criar_Evento_Calendar": {
+        "main": [
+          [
+            {
+              "node": "Update_User",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update_User": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Enviar_Confirmacao",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar_Confirmacao": {
+        "main": [
+          [
+            {
+              "node": "Get_Labels",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get_Labels": {
+        "main": [
+          [
+            {
+              "node": "Add_Label_Agendada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "System AI SIM",
+    "name": "Version 66a9d7fa",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": [
+    {
+      "updatedAt": "2026-06-10T12:30:02.035Z",
+      "createdAt": "2026-06-10T12:30:02.035Z",
+      "id": "dQiugrS0okCvZHoj",
+      "name": "github"
+    }
+  ]
+}
